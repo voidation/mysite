@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>whoami</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on whoami</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 22 May 2026 14:58:07 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How I ended up in CyberSecurity.</title>
+      <link>http://localhost:1313/posts/how-i-got-into-cybersecurity/</link>
+      <pubDate>Fri, 22 May 2026 14:58:07 +0800</pubDate>
+      <guid>http://localhost:1313/posts/how-i-got-into-cybersecurity/</guid>
+      <description>&lt;p&gt;As of writing this post, I am a young offensive security professional in the most uncertain years of the tech industry. I recently became a penetration tester (it&amp;rsquo;s been 10 months) and I have loved it since I&amp;rsquo;ve joined.&lt;/p&gt;
+&lt;p&gt;Before this, I had obtained a Bachelor of Engineering and a Bachelor of Computer Science at Curtin University. I really enjoyed my degrees and loved my Uni years, and I&amp;rsquo;m hoping to do a few posts on some of the projects I did back then.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

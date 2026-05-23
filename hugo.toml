@@ -1,0 +1,60 @@
+baseURL = 'https://voidation.github.io/'
+locale = 'en-us'
+title = "whoami"
+theme = 'PaperMod'
+
+# Enable syntax highlighting for code blocks
+pygmentsUseClasses = true
+markup.highlight.style = "monokai"
+
+[params]
+    env = "production"
+    title = "Ankush Dugar"
+    description = "Offensive Security Professional"
+    defaultTheme = "auto" # toggles light/dark mode automatically
+    
+    # --- Profile Mode Setup ---
+    [params.profileMode]
+        enabled = true
+        title = "Ankush Dugar"
+        subtitle = "Offensive Security Professional"
+        imageUrl = "https://media.licdn.com/dms/image/v2/C5603AQFt1XvbZE9K3w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1647488576591?e=1781136000&v=beta&t=5TCG0dQ6aacxsJhLXTcMkI1N9Ica1doEH8_LNHrDpNc" # Grab linkedin profile picture
+        imageWidth = 150
+        imageHeight = 150
+        
+        [[params.profileMode.buttons]]
+            name = "Read the Blog"
+            url = "posts/"
+
+    # --- Social Media Icons Under Bio ---
+    # PaperMod generates the proper SVGs automatically based on the 'name' attribute
+    [[params.socialIcons]]
+        name = "github"
+        url = "https://github.com/voidation"
+    [[params.socialIcons]]
+        name = "linkedin"
+        url = "https://linkedin.com/in/ankush-dugar"
+    [[params.socialIcons]]
+        name = "twitter"
+        url = "https://x.com/voidation55"
+
+# --- Top Right Header Navigation Menu ---
+[[menu.main]]
+    name = "Posts"
+    url = "posts/"
+    weight = 10
+
+[[menu.main]]
+    name = "Projects"
+    url = "projects/"
+    weight = 20
+
+[[menu.main]]
+    name = "Tags"
+    url = "tags/"
+    weight = 30
+
+[[menu.main]]
+    name = "About/Resume"
+    url = "about/"
+    weight = 40
