@@ -1,6 +1,6 @@
 +++
 date = '2026-05-23T10:24:47+08:00'
-draft = false
+draft = true
 title = 'Offensive Security Certified Professional (OSCP) Review'
 +++
 
