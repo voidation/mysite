@@ -49,12 +49,3 @@ markup.highlight.style = "monokai"
     url = "projects/"
     weight = 20
 
-[[menu.main]]
-    name = "Tags"
-    url = "tags/"
-    weight = 30
-
-[[menu.main]]
-    name = "About/Resume"
-    url = "about/"
-    weight = 40

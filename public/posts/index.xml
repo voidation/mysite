@@ -6,8 +6,18 @@
     <description>Recent content in Posts on whoami</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 22 May 2026 14:58:07 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 23 May 2026 10:24:47 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Offensive Security Certified Professional (OSCP) Review</title>
+      <link>http://localhost:1313/posts/oscp-review/</link>
+      <pubDate>Sat, 23 May 2026 10:24:47 +0800</pubDate>
+      <guid>http://localhost:1313/posts/oscp-review/</guid>
+      <description>&lt;p&gt;This is a post about my experience with the OSCP. I&amp;rsquo;m going to cover the following points:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What is the OSCP and why it was important?&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     <item>
       <title>How I ended up in CyberSecurity.</title>
       <link>http://localhost:1313/posts/how-i-got-into-cybersecurity/</link>

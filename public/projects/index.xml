@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Projects on whoami</title>
+    <link>http://localhost:1313/projects/</link>
+    <description>Recent content in Projects on whoami</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 23 May 2026 10:36:21 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Title</title>
+      <link>http://localhost:1313/projects/proj-template/</link>
+      <pubDate>Sat, 23 May 2026 10:36:21 +0800</pubDate>
+      <guid>http://localhost:1313/projects/proj-template/</guid>
+      <description>&lt;h3 id=&#34;description&#34;&gt;Description&lt;/h3&gt;
+&lt;p&gt;👉 &lt;strong&gt;&lt;a href=&#34;&#34;&gt;Read the Full Technical Blog Post&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Use of EEG and NIRS for the classification of Situational Awareness (Honours Thesis)</title>
+      <link>http://localhost:1313/projects/thesis/</link>
+      <pubDate>Fri, 15 Nov 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/thesis/</guid>
+      <description>&lt;h3 id=&#34;description&#34;&gt;Description&lt;/h3&gt;
+&lt;p&gt;For my honours project, I collected brain activity data of my own brain using EEG and NIRS devices. The project involved collecting raw data from the devices, processing the data, building machine learning models and training/testing those models in an attempt to classify the brain activity to differing levels of situational awareness.&lt;/p&gt;
+&lt;p&gt;👉 &lt;strong&gt;&lt;a href=&#34;&#34;&gt;Read the Full Technical Blog Post&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Line-Following Robot</title>
+      <link>http://localhost:1313/projects/line-following-robot/</link>
+      <pubDate>Sun, 15 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/line-following-robot/</guid>
+      <description>&lt;h3 id=&#34;high-level-summary&#34;&gt;High-Level Summary&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Description:&lt;/strong&gt; This project involved building a simple line-following robot. However, the project&amp;rsquo;s complexity came from having to design circuits for the control of the motors and the use of the Arduino&amp;rsquo;s PWM functionalities was not allowed. Hence, we had to use a DAC to convert our digital signal into an analog signal. This was then converted to a PWM using a 555 Timer and comparator. The final signal was then power amplified with a class AB amplifier.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key Takeaways:&lt;/strong&gt; There was a point in this project where our entire circuit just didn&amp;rsquo;t work, and we had to look at the voltage and current at every node to troubleshoot. When it finally worked, it felt amazing. Being able to build the circuit and then program the controller to get the robot to follow the line by reading the sensors and sending the appropriate PWM signals to the motor - it felt awesome to see it finally all come together at the end.&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+  </channel>
+</rss>

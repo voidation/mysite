@@ -1,0 +1,85 @@
+{{ define "main" }}
+<!-- 1. Screen-Centered Header: Forces text alignment to the absolute center of the viewport screen -->
+<header class="page-header" style="
+    text-align: center; 
+    margin: 0 auto 40px auto; 
+    max-width: 800px;
+    padding: 0 20px;
+">
+    <h1 style="font-size: 2.75rem; color: var(--primary); margin-bottom: 12px; font-weight: 700;">{{ .Title }}</h1>
+    {{- if .Description }}
+    <div class="post-description" style="
+        color: var(--secondary); 
+        font-size: 1.15rem; 
+        line-height: 1.5;
+        margin: 0 auto;
+    ">{{ .Description }}</div>
+    {{- end }}
+</header>
+
+<!-- 2. The Viewport Breakout Grid Wrapper -->
+<div class="projects-breakout-grid-wrapper" style="
+    width: 85vw;
+    max-width: 1400px;
+    margin-left: calc(50% - 42.5vw);
+    margin-right: calc(50% - 42.5vw);
+    box-sizing: border-box;
+">
+    
+    <style>
+        .custom-dynamic-portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .custom-dynamic-portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 640px) {
+            .custom-dynamic-portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- 3. The Grid Execution Space -->
+    <div class="custom-dynamic-portfolio-grid">
+        {{- range .Pages }}
+        <article class="project-card" style="
+            background: var(--entry);
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-sizing: border-box;
+        ">
+            <!-- Image Frame -->
+            {{- if .Params.cover.image }}
+            <div style="width: 100%; height: 180px; overflow: hidden; background: var(--tertiary);">
+                <img src="{{ ( .Resources.GetMatch .Params.cover.image ).RelPermalink | default .Params.cover.image }}" 
+                     alt="{{ .Params.cover.alt }}" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            {{- end }}
+
+            <!-- Content Area -->
+            <div style="padding: 24px; flex-grow: 1; display: flex; flex-direction: column; box-sizing: border-box;">
+                <h3 style="margin: 0 0 12px 0; font-size: 1.3rem; font-weight: 600;">
+                    <a href="{{ .Permalink }}" style="color: var(--primary); text-decoration: none;">{{ .Title }}</a>
+                </h3>
+                <div style="font-size: 0.95rem; line-height: 1.6; color: var(--secondary); flex-grow: 1;">
+                    {{ .Content }}
+                </div>
+            </div>
+        </article>
+        {{- end }}
+    </div>
+</div>
+{{ end }}

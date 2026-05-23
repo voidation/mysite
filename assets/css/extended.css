@@ -1,0 +1,13 @@
+/* Tell the project page wrapper to ignore PaperMod's default max-width limits */
+.project-portfolio-wrapper {
+    max-width: 95% !important; /* Spans almost the full screen */
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Optional: Smooth out the padding on massive ultra-wide monitors */
+@media screen and (min-width: 1400px) {
+    .project-portfolio-wrapper {
+        max-width: 85% !important; 
+    }
+}
