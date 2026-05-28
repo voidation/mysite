@@ -6,7 +6,7 @@ title = 'How I ended up in CyberSecurity.'
 
 As of writing this post, I am a young offensive security professional that recently became a penetration tester (10 months) and I have loved it since I've joined.
 
-Before this, I had obtained a Bachelor of Engineering and a Bachelor of Computer Science at Curtin University. I really loved my Uni years, and you can take a look at some of the projects in the Projects section. 
+Before this, I had obtained a Bachelor of Engineering and a Bachelor of Computer Science at Curtin University. You can take a look at some of the projects in the Projects section. 
 
 After that I got my first Engineering job in WA. You see, I got into Engineering for the reason that most people get into it - curiosity, learning about how things work, designing and seeing your ideas come to life. This job just wasn't what I imagined at all, it was mostly sales and management. I killed it at the job and got paid decently, but I frequently felt like not wanting to go into work the next day. It was getting to me mentally and even interferring with my personal life. What I really wanted was a technically challenging role where I actually got to understand systems fundamentally and that's what I decided to pursue.
 
