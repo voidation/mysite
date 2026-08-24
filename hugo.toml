@@ -1,4 +1,4 @@
-baseURL = 'https://voidation.github.io/'
+baseURL = 'http://localhost:1313/'
 locale = 'en-us'
 title = "whoami"
 theme = 'PaperMod'
@@ -18,7 +18,7 @@ markup.highlight.style = "monokai"
         enabled = true
         title = "Ankush Dugar"
         subtitle = "Offensive Security Professional"
-        imageUrl = "/images/profile.png" # local avatar served from static/
+        imageUrl = "images/profile.png" # local avatar served from static/
         imageWidth = 150
         imageHeight = 150
         

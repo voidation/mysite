@@ -24,7 +24,7 @@
                 <td style="padding:12px 16px; color:var(--secondary);">{{ index $parts 1 }}</td>
                 <td style="padding:12px 16px; text-align:right;">
                     {{- if .Params.writeup }}
-                    <a href="/writeups/{{ .File.ContentBaseName }}/" style="display:inline-block; padding:4px 14px; border:1px solid var(--primary); border-radius:var(--radius); color:var(--primary); text-decoration:none; font-size:0.85rem;">Write-Up</a>
+                    <a href="{{ strings.Replace .RelPermalink "/htb/" "/writeups/" }}" style="display:inline-block; padding:4px 14px; border:1px solid var(--primary); border-radius:var(--radius); color:var(--primary); text-decoration:none; font-size:0.85rem;">Write-Up</a>
                     {{- else }}<span style="color:var(--secondary); font-size:0.85rem;">—</span>{{- end }}
                 </td>
             </tr>
