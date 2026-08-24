@@ -1,0 +1,35 @@
+{{ define "main" }}
+<header class="page-header" style="text-align:center; margin:0 auto 40px auto; padding:0 20px;">
+    <h1 style="font-size:2.75rem; color:var(--primary); margin-bottom:12px; font-weight:700;">{{ .Title }}</h1>
+    {{- if .Description }}
+    <div class="post-description" style="color:var(--secondary); font-size:1.15rem; line-height:1.5;">{{ .Description }}</div>
+    {{- end }}
+</header>
+<div style="margin:0 auto; padding:0 20px;">
+    <table style="display:table; width:100%; border-collapse:collapse; background:var(--entry); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;">
+        <thead>
+            <tr style="background:var(--tertiary);">
+                <th style="text-align:left; padding:12px 16px; font-size:0.9rem; color:var(--secondary);">Box</th>
+                <th style="text-align:left; padding:12px 16px; font-size:0.9rem; color:var(--secondary);">Difficulty</th>
+                <th style="text-align:left; padding:12px 16px; font-size:0.9rem; color:var(--secondary);">OS</th>
+                <th style="text-align:right; padding:12px 16px; font-size:0.9rem; color:var(--secondary);">Write-Up</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{- range .Pages }}
+            {{- $parts := split .Description " " }}
+            <tr style="border-top:1px solid var(--border);">
+                <td style="padding:12px 16px;"><a href="{{ .RelPermalink }}" style="color:var(--primary); text-decoration:none; font-weight:600;">{{ .Title }}</a></td>
+                <td style="padding:12px 16px; color:var(--secondary);">{{ index $parts 0 }}</td>
+                <td style="padding:12px 16px; color:var(--secondary);">{{ index $parts 1 }}</td>
+                <td style="padding:12px 16px; text-align:right;">
+                    {{- if .Params.writeup }}
+                    <a href="/writeups/{{ .File.ContentBaseName }}/" style="display:inline-block; padding:4px 14px; border:1px solid var(--primary); border-radius:var(--radius); color:var(--primary); text-decoration:none; font-size:0.85rem;">Write-Up</a>
+                    {{- else }}<span style="color:var(--secondary); font-size:0.85rem;">—</span>{{- end }}
+                </td>
+            </tr>
+            {{- end }}
+        </tbody>
+    </table>
+</div>
+{{ end }}

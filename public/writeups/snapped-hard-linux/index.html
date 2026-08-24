@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Snapped | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Hard Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/writeups/snapped-hard-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/writeups/snapped-hard-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/writeups/snapped-hard-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Snapped">
+  <meta property="og:description" content="Hard Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Snapped">
+  <meta name="twitter:description" content="Hard Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-Ups",
+      "item": "http://localhost:1313/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Snapped",
+      "item": "http://localhost:1313/writeups/snapped-hard-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Snapped",
+  "name": "Snapped",
+  "description": "Hard Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "Kicked off with an nmap scan.\nThe site is snapped.htb.\nThe website is fully static, so I started fuzzing.\nSubdomain enumeration turned up admin.snapped.htb.\nAdded it to /etc/hosts and navigated there - it reveals an nginx UI page.\nNothing relevant in exploitdb.\nFuzzing the admin panel.\n/assets has directory listing enabled.\nVersion files reveal the nginx UI version.\nFound a CVE for this version after some searching.\nThe CVE details point at the /api/backup endpoint - navigating there downloads a zip file.\nCVE details:\nThe article states the backup is encrypted with AES-256. There’s also a PoC on the advisory’s GitHub page:\nhttps://github.com/0xJacky/nginx-ui/security/advisories/GHSA-g9w5-qffc-6762\nDecrypted successfully!\ndatabase.db contains password hashes.\n$2a$10$8YdBq4e.WeQn8gv9E0ehh.quy8D/4mXHHY4ALLMAzgFPTrIVltEvm $2a$10$8M7JZSRLKdtJpx9YRUNTmODN.pKoBsoGCBi5Z8/WVGO2od9oCSyWq\nHashcat was taking ages on my machine, so I double-checked this was the right path - it was, just a slow computer. Eventually it cracked the admin hash: linkinpark.\nThat password works for user jonathan over SSH.\nRan linpeas - nothing too obvious:\nno unusual SUID files no abusable capabilities no extra groups no obvious scheduled tasks In jonathan’s home directory, the most suspicious thing is a snap directory with lots of files and config.\nChecking the snap version.\nFollowing the snap-confine / systemd tmpfiles LPE:\nhttps://github.com/TheCyberGeek/CVE-2026-3888-snap-confine-systemd-tmpfiles-LPE\nCompiled and transferred it over.\nNot working - errors.\nLooking back through the linpeas output.\nhttps://github.com/JuanBindez/CVE-2026-31431/blob/main/main.py\nUsed the python exploit - got a root shell!\n",
+  "wordCount" : "223",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/writeups/snapped-hard-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Snapped
+    </h1>
+    <div class="post-description">
+      Hard Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>Kicked off with an nmap scan.</p>
+<p><img alt="Snapped (Hard Linux).png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29.png"></p>
+<p>The site is <code>snapped.htb</code>.</p>
+<p><img alt="Snapped (Hard Linux)-1.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-1.png"></p>
+<p>The website is fully static, so I started fuzzing.</p>
+<p><img alt="Snapped (Hard Linux)-5.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-5.png"></p>
+<p>Subdomain enumeration turned up <code>admin.snapped.htb</code>.</p>
+<p><img alt="Snapped (Hard Linux)-2.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-2.png"></p>
+<p>Added it to <code>/etc/hosts</code> and navigated there - it reveals an nginx UI page.</p>
+<p><img alt="Snapped (Hard Linux)-3.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-3.png"></p>
+<p>Nothing relevant in exploitdb.</p>
+<p><img alt="Snapped (Hard Linux)-4.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-4.png"></p>
+<p>Fuzzing the admin panel.</p>
+<p><img alt="Snapped (Hard Linux)-9.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-9.png"></p>
+<p><code>/assets</code> has directory listing enabled.</p>
+<p><img alt="Snapped (Hard Linux)-6.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-6.png"></p>
+<p>Version files reveal the nginx UI version.</p>
+<p><img alt="Snapped (Hard Linux)-7.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-7.png"></p>
+<p><img alt="Snapped (Hard Linux)-8.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-8.png"></p>
+<p>Found a CVE for this version after some searching.</p>
+<p><img alt="Snapped (Hard Linux)-10.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-10.png"></p>
+<p>The CVE details point at the <code>/api/backup</code> endpoint - navigating there downloads a zip file.</p>
+<p><img alt="Snapped (Hard Linux)-11.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-11.png">
+<img alt="Snapped (Hard Linux)-12.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-12.png"></p>
+<p>CVE details:</p>
+<p><img alt="Snapped (Hard Linux)-13.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-13.png"></p>
+<p><img alt="Snapped (Hard Linux)-14.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-14.png"></p>
+<p>The article states the backup is encrypted with AES-256. There&rsquo;s also a PoC on the advisory&rsquo;s GitHub page:</p>
+<p><a href="https://github.com/0xJacky/nginx-ui/security/advisories/GHSA-g9w5-qffc-6762">https://github.com/0xJacky/nginx-ui/security/advisories/GHSA-g9w5-qffc-6762</a></p>
+<p><img alt="Snapped (Hard Linux)-15.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-15.png"></p>
+<p>Decrypted successfully!</p>
+<p><img alt="Snapped (Hard Linux)-16.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-16.png"></p>
+<p><code>database.db</code> contains password hashes.</p>
+<p><img alt="Snapped (Hard Linux)-17.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-17.png">
+<code>$2a$10$8YdBq4e.WeQn8gv9E0ehh.quy8D/4mXHHY4ALLMAzgFPTrIVltEvm</code>
+<code>$2a$10$8M7JZSRLKdtJpx9YRUNTmODN.pKoBsoGCBi5Z8/WVGO2od9oCSyWq</code></p>
+<p>Hashcat was taking ages on my machine, so I double-checked this was the right path - it was, just a slow computer. Eventually it cracked the admin hash: <code>linkinpark</code>.</p>
+<p>That password works for user <code>jonathan</code> over SSH.</p>
+<p><img alt="Snapped (Hard Linux)-18.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-18.png"></p>
+<p>Ran linpeas - nothing too obvious:</p>
+<ul>
+<li>no unusual SUID files</li>
+<li>no abusable capabilities</li>
+<li>no extra groups</li>
+<li>no obvious scheduled tasks</li>
+</ul>
+<p>In jonathan&rsquo;s home directory, the most suspicious thing is a <code>snap</code> directory with lots of files and config.</p>
+<p><img alt="Snapped (Hard Linux)-19.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-19.png"></p>
+<p>Checking the snap version.</p>
+<p><img alt="Snapped (Hard Linux)-20.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-20.png"></p>
+<p><img alt="Snapped (Hard Linux)-21.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-21.png"></p>
+<p>Following the snap-confine / systemd tmpfiles LPE:</p>
+<p><a href="https://github.com/TheCyberGeek/CVE-2026-3888-snap-confine-systemd-tmpfiles-LPE">https://github.com/TheCyberGeek/CVE-2026-3888-snap-confine-systemd-tmpfiles-LPE</a></p>
+<p>Compiled and transferred it over.</p>
+<p><img alt="Snapped (Hard Linux)-22.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-22.png"></p>
+<p>Not working - errors.</p>
+<p><img alt="Snapped (Hard Linux)-23.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-23.png"></p>
+<p>Looking back through the linpeas output.</p>
+<p><img alt="Snapped (Hard Linux)-24.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-24.png"></p>
+<p><a href="https://github.com/JuanBindez/CVE-2026-31431/blob/main/main.py">https://github.com/JuanBindez/CVE-2026-31431/blob/main/main.py</a></p>
+<p>Used the python exploit - got a root shell!</p>
+<p><img alt="Snapped (Hard Linux)-25.png" loading="lazy" src="/writeups/snapped-hard-linux/Snapped%20%28Hard%20Linux%29-25.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

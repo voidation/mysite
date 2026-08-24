@@ -18,7 +18,7 @@ markup.highlight.style = "monokai"
         enabled = true
         title = "Ankush Dugar"
         subtitle = "Offensive Security Professional"
-        imageUrl = "https://media.licdn.com/dms/image/v2/C5603AQFt1XvbZE9K3w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1647488576591?e=1781136000&v=beta&t=5TCG0dQ6aacxsJhLXTcMkI1N9Ica1doEH8_LNHrDpNc" # Grab linkedin profile picture
+        imageUrl = "/images/profile.png" # local avatar served from static/
         imageWidth = 150
         imageHeight = 150
         
@@ -48,4 +48,9 @@ markup.highlight.style = "monokai"
     name = "Projects"
     url = "projects/"
     weight = 20
+
+[[menu.main]]
+    name = "HTB"
+    url = "htb/"
+    weight = 30
 

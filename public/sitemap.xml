@@ -8,17 +8,14 @@
     <loc>http://localhost:1313/</loc>
     <lastmod>2026-05-23T10:36:21+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/oscp-review/</loc>
-    <lastmod>2026-05-23T10:24:47+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2026-05-23T10:24:47+08:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/projects/</loc>
     <lastmod>2026-05-23T10:16:49+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/how-i-got-into-cybersecurity/</loc>
-    <lastmod>2026-05-22T14:58:07+08:00</lastmod>
+    <loc>http://localhost:1313/posts/hello-world/</loc>
+    <lastmod>2026-05-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2026-05-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/projects/thesis/</loc>
     <lastmod>2024-11-15T00:00:00+00:00</lastmod>
@@ -26,8 +23,114 @@
     <loc>http://localhost:1313/projects/line-following-robot/</loc>
     <lastmod>2023-10-15T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/htb/access-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/access-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/artificial-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/bashed-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/bashed-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/boardlight-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/broker-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/broker-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/builder-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/busqueda-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/busqueda-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/cap-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/cap-easy-linux/</loc>
+  </url><url>
     <loc>http://localhost:1313/categories/</loc>
   </url><url>
+    <loc>http://localhost:1313/htb/conversor-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/cozyhosting-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/cozyhosting-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/devvortex-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/devvortex-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/editor-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/editor-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/editorial-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/editorial-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/expressway-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/expressway-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/help-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/help-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/imagery-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/imagery-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/jarvis-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/jarvis-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/jerry-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/jerry-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/keeper-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/keeper-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/magic-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/magic-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/monitored-medium-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/netmon-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/netmon-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/sau-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/sau-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/servmon-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/servmon-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/silentium-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/snapped-hard-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/snapped-hard-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/soccer-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/soccer-easy-linux/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/support-easy-windows/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/support-easy-windows/</loc>
+  </url><url>
     <loc>http://localhost:1313/tags/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/</loc>
+  </url><url>
+    <loc>http://localhost:1313/htb/writeup-easy-linux/</loc>
   </url>
 </urlset>

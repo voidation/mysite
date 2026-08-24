@@ -17,23 +17,11 @@
 &lt;p&gt;👉 &lt;strong&gt;&lt;a href=&#34;&#34;&gt;Read the Full Technical Blog Post&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Offensive Security Certified Professional (OSCP) Review</title>
-      <link>http://localhost:1313/posts/oscp-review/</link>
-      <pubDate>Sat, 23 May 2026 10:24:47 +0800</pubDate>
-      <guid>http://localhost:1313/posts/oscp-review/</guid>
-      <description>&lt;p&gt;This is a post about my experience with the OSCP. I&amp;rsquo;m going to cover the following points:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;What is the OSCP and why it was important?&lt;/li&gt;
-&lt;/ul&gt;</description>
-    </item>
-    <item>
-      <title>How I ended up in CyberSecurity.</title>
-      <link>http://localhost:1313/posts/how-i-got-into-cybersecurity/</link>
-      <pubDate>Fri, 22 May 2026 14:58:07 +0800</pubDate>
-      <guid>http://localhost:1313/posts/how-i-got-into-cybersecurity/</guid>
-      <description>&lt;p&gt;As of writing this post, I am a young offensive security professional that recently became a penetration tester (10 months) and I have loved it since I&amp;rsquo;ve joined.&lt;/p&gt;
-&lt;p&gt;Before this, I had obtained a Bachelor of Engineering and a Bachelor of Computer Science at Curtin University. I really loved my Uni years, and you can take a look at some of the projects in the Projects section.&lt;/p&gt;
-&lt;p&gt;After that I got my first Engineering job in WA. You see, I got into Engineering for the reason that most people get into it - curiosity, learning about how things work, designing and seeing your ideas come to life. This job just wasn&amp;rsquo;t what I imagined at all, it was mostly sales and management. I killed it at the job and got paid decently, but I frequently felt like not wanting to go into work the next day. It was getting to me mentally and even interferring with my personal life. What I really wanted was a technically challenging role where I actually got to understand systems fundamentally and that&amp;rsquo;s what I decided to pursue.&lt;/p&gt;</description>
+      <title>Hello World</title>
+      <link>http://localhost:1313/posts/hello-world/</link>
+      <pubDate>Sat, 16 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/hello-world/</guid>
+      <description>&lt;p&gt;Hello World!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Use of EEG and NIRS for the classification of Situational Awareness (Honours Thesis)</title>
@@ -54,6 +42,363 @@
 &lt;li&gt;&lt;strong&gt;Description:&lt;/strong&gt; This project involved building a simple line-following robot. However, the project&amp;rsquo;s complexity came from having to design circuits for the control of the motors and the use of the Arduino&amp;rsquo;s PWM functionalities was not allowed. Hence, we had to use a DAC to convert our digital signal into an analog signal. This was then converted to a PWM using a 555 Timer and comparator. The final signal was then power amplified with a class AB amplifier.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Key Takeaways:&lt;/strong&gt; There was a point in this project where our entire circuit just didn&amp;rsquo;t work, and we had to look at the voltage and current at every node to troubleshoot. When it finally worked, it felt amazing. Being able to build the circuit and then program the controller to get the robot to follow the line by reading the sensors and sending the appropriate PWM signals to the motor - it felt awesome to see it finally all come together at the end.&lt;/li&gt;
 &lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>Access</title>
+      <link>http://localhost:1313/htb/access-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/access-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Access</title>
+      <link>http://localhost:1313/writeups/access-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/access-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Artificial</title>
+      <link>http://localhost:1313/htb/artificial-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/artificial-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Bashed</title>
+      <link>http://localhost:1313/htb/bashed-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/bashed-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Bashed</title>
+      <link>http://localhost:1313/writeups/bashed-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/bashed-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>BoardLight</title>
+      <link>http://localhost:1313/htb/boardlight-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/boardlight-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Broker</title>
+      <link>http://localhost:1313/htb/broker-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/broker-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Broker (Easy Linux) - ActiveMQ</title>
+      <link>http://localhost:1313/writeups/broker-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/broker-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Builder</title>
+      <link>http://localhost:1313/htb/builder-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/builder-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Busqueda</title>
+      <link>http://localhost:1313/htb/busqueda-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/busqueda-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Busqueda</title>
+      <link>http://localhost:1313/writeups/busqueda-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/busqueda-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Cap</title>
+      <link>http://localhost:1313/htb/cap-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/cap-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Cap</title>
+      <link>http://localhost:1313/writeups/cap-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/cap-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Conversor</title>
+      <link>http://localhost:1313/htb/conversor-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/conversor-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>CozyHosting</title>
+      <link>http://localhost:1313/htb/cozyhosting-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/cozyhosting-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>CozyHosting</title>
+      <link>http://localhost:1313/writeups/cozyhosting-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/cozyhosting-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Devvortex</title>
+      <link>http://localhost:1313/htb/devvortex-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/devvortex-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Devvortex</title>
+      <link>http://localhost:1313/writeups/devvortex-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/devvortex-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Editor</title>
+      <link>http://localhost:1313/htb/editor-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/editor-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Editor</title>
+      <link>http://localhost:1313/writeups/editor-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/editor-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Editorial</title>
+      <link>http://localhost:1313/htb/editorial-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/editorial-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Editorial</title>
+      <link>http://localhost:1313/writeups/editorial-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/editorial-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Expressway</title>
+      <link>http://localhost:1313/htb/expressway-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/expressway-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Expressway</title>
+      <link>http://localhost:1313/writeups/expressway-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/expressway-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Help</title>
+      <link>http://localhost:1313/htb/help-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/help-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Help</title>
+      <link>http://localhost:1313/writeups/help-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/help-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Imagery</title>
+      <link>http://localhost:1313/htb/imagery-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/imagery-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Imagery</title>
+      <link>http://localhost:1313/writeups/imagery-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/imagery-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Jarvis</title>
+      <link>http://localhost:1313/htb/jarvis-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/jarvis-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Jarvis</title>
+      <link>http://localhost:1313/writeups/jarvis-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/jarvis-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Jerry</title>
+      <link>http://localhost:1313/htb/jerry-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/jerry-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Jerry</title>
+      <link>http://localhost:1313/writeups/jerry-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/jerry-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Keeper</title>
+      <link>http://localhost:1313/htb/keeper-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/keeper-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Keeper</title>
+      <link>http://localhost:1313/writeups/keeper-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/keeper-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Magic</title>
+      <link>http://localhost:1313/htb/magic-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/magic-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Magic</title>
+      <link>http://localhost:1313/writeups/magic-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/magic-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Monitored</title>
+      <link>http://localhost:1313/htb/monitored-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/monitored-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Netmon</title>
+      <link>http://localhost:1313/htb/netmon-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/netmon-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Netmon</title>
+      <link>http://localhost:1313/writeups/netmon-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/netmon-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Sau</title>
+      <link>http://localhost:1313/htb/sau-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/sau-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Sau</title>
+      <link>http://localhost:1313/writeups/sau-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/sau-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Servmon</title>
+      <link>http://localhost:1313/htb/servmon-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/servmon-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Servmon</title>
+      <link>http://localhost:1313/writeups/servmon-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/servmon-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Silentium</title>
+      <link>http://localhost:1313/htb/silentium-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/silentium-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Snapped</title>
+      <link>http://localhost:1313/htb/snapped-hard-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/snapped-hard-linux/</guid>
+      <description>Hard Linux</description>
+    </item>
+    <item>
+      <title>Snapped</title>
+      <link>http://localhost:1313/writeups/snapped-hard-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/snapped-hard-linux/</guid>
+      <description>Hard Linux</description>
+    </item>
+    <item>
+      <title>Soccer</title>
+      <link>http://localhost:1313/htb/soccer-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/soccer-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Soccer</title>
+      <link>http://localhost:1313/writeups/soccer-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/soccer-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Support</title>
+      <link>http://localhost:1313/htb/support-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/support-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Support</title>
+      <link>http://localhost:1313/writeups/support-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writeups/support-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Writeup</title>
+      <link>http://localhost:1313/htb/writeup-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/writeup-easy-linux/</guid>
+      <description>Easy Linux</description>
     </item>
   </channel>
 </rss>

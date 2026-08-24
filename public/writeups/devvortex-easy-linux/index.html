@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Devvortex | whoami</title>
+<meta name="keywords" content="">
+<meta name="description" content="Easy Linux">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/writeups/devvortex-easy-linux/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/writeups/devvortex-easy-linux/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="http://localhost:1313/writeups/devvortex-easy-linux/">
+  <meta property="og:site_name" content="whoami">
+  <meta property="og:title" content="Devvortex">
+  <meta property="og:description" content="Easy Linux">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Devvortex">
+  <meta name="twitter:description" content="Easy Linux">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-Ups",
+      "item": "http://localhost:1313/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Devvortex",
+      "item": "http://localhost:1313/writeups/devvortex-easy-linux/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Devvortex",
+  "name": "Devvortex",
+  "description": "Easy Linux",
+  "keywords": [
+    
+  ],
+  "articleBody": "nmap scan:\nPORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 (Ubuntu Linux; protocol 2.0) 80/tcp open http nginx 1.18.0 (Ubuntu) Ports 80 and 22 (http and ssh). The site tries to redirect to http://devvortex.htb/ - changed /etc/hosts.\nExplored - not too much to interact with.\nThere are a couple of inputs for email and name to get a “call back” - doesn’t seem to have injection. /images/xxx.png - a few images exist like this in the source HTML - don’t think that’s a vuln.\nRunning out of ideas - time to fuzz. While the fuzz ran, checked versions for SSH. OpenSSH 8.2p1 looked potentially vulnerable.\nNot vulnerable to Terrapin.\nLooked at other things - lost. Did a couple of questions on the guided mode of HackTheBox - I forgot to fuzz subdomains. That’s it for today, pick it up tomorrow - next step is fuzz subdomains.\nFuzzed and found dev.devvortex.htb. Based on the HTTP response, the site uses the Cassiopeia CMS.\nInteresting page? Can see /index.php - so it’s a PHP server. The site is using Joomla.\nSearching for Joomla vulnerabilities - Joomla! 4 exposes version information in /language/en-GB/langmetadata.xml.\nPotential exploits:\nLogin page exposed. Searching “joomla 4.2.6 administrator login vulnerability” → https://www.vulncheck.com/blog/joomla-for-rce → CVE-2023-23752.\ncurl -v http://dev.devvortex.htb/api/index.php/v1/config/application?public=true Provides:\nuser: lewis password: P4ntherg0t1n5r3c0n## Logged into the Joomla admin portal. Following the path to code execution: System → Administrator Templates → Atum → Details and Files.\nAdded a simple line to index.php to get command execution. Stole the PHP reverse shell from https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php\nAs www-data - checking /etc/passwd, the interesting user is logan (/home/logan:/bin/bash).\nGot the reverse shell - now to privesc. Attack path: look for logan’s password somewhere on the box. Run linpeas, run find commands in suspicious locations.\nUsing ss -tuln / ss -tulp we can see MySQL is running on the box, and with lewis’s creds we can log in:\nListed the databases - the Joomla one has the standard sd4fg_* table set (users, etc.).\nlogan@devvortex.htb $2y$10$IT4k5kmSGvHSO9d6M/1w0eYiB5Ne9XzArQRFJTGThNiy/yBtkIj12\nhashcat -a 0 -m 3200 hash.txt /usr/share/wordlists/rockyou.txt Cracked! Password for logan is tequieromucho.\nlogan@devvortex.htb / tequieromucho\nSSH in as logan - user pwned!\nWe can run apport-cli as root - version 2.20.11. Searching this up, there’s CVE-2023-1326 which leads to privilege escalation.\nUsing the help page, running\n/usr/bin/apport-cli -P 0 -f --save=/home/logan/a.crash creates a valid crash file, which we can then do\nsudo /usr/bin/apport-cli -c a.crash and “view” - that drops us into a less view of the report, which we can exit with !/bin/bash giving us root.\n",
+  "wordCount" : "419",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/writeups/devvortex-easy-linux/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "whoami",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="whoami (Alt + H)">whoami</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/htb/" title="HTB">
+                    <span>HTB</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Devvortex
+    </h1>
+    <div class="post-description">
+      Easy Linux
+    </div>
+  </header> 
+  <div class="post-content md-content"><p>nmap scan:</p>
+<pre tabindex="0"><code>PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    nginx 1.18.0 (Ubuntu)
+</code></pre><p>Ports 80 and 22 (http and ssh). The site tries to redirect to <a href="http://devvortex.htb/">http://devvortex.htb/</a> - changed <code>/etc/hosts</code>.</p>
+<p>Explored - not too much to interact with.</p>
+<p><img alt="Devvortex (Easy Linux).png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29.png"></p>
+<p>There are a couple of inputs for email and name to get a &ldquo;call back&rdquo; - doesn&rsquo;t seem to have injection. <code>/images/xxx.png</code> - a few images exist like this in the source HTML - don&rsquo;t think that&rsquo;s a vuln.</p>
+<p>Running out of ideas - time to fuzz. While the fuzz ran, checked versions for SSH. OpenSSH 8.2p1 looked potentially vulnerable.</p>
+<p><img alt="Devvortex (Easy Linux)-1.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-1.png">
+<img alt="Devvortex (Easy Linux)-2.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-2.png"></p>
+<p>Not vulnerable to Terrapin.</p>
+<p>Looked at other things - lost. Did a couple of questions on the guided mode of HackTheBox - <strong>I forgot to fuzz subdomains</strong>. That&rsquo;s it for today, pick it up tomorrow - next step is fuzz subdomains.</p>
+<p><img alt="Devvortex (Easy Linux)-3.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-3.png"></p>
+<p>Fuzzed and found <code>dev.devvortex.htb</code>. Based on the HTTP response, the site uses the Cassiopeia CMS.</p>
+<p><img alt="Devvortex (Easy Linux)-4.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-4.png"></p>
+<p>Interesting page? Can see <code>/index.php</code> - so it&rsquo;s a PHP server. The site is using Joomla.</p>
+<p>Searching for Joomla vulnerabilities - Joomla! 4 exposes version information in <code>/language/en-GB/langmetadata.xml</code>.</p>
+<p><img alt="Devvortex (Easy Linux)-5.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-5.png"></p>
+<p>Potential exploits:</p>
+<p><img alt="Devvortex (Easy Linux)-6.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-6.png">
+<img alt="Devvortex (Easy Linux)-7.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-7.png"></p>
+<p>Login page exposed. Searching &ldquo;joomla 4.2.6 administrator login vulnerability&rdquo; → <a href="https://www.vulncheck.com/blog/joomla-for-rce">https://www.vulncheck.com/blog/joomla-for-rce</a> → CVE-2023-23752.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -v http://dev.devvortex.htb/api/index.php/v1/config/application?public<span class="o">=</span><span class="nb">true</span>
+</span></span></code></pre></div><p>Provides:</p>
+<p><img alt="Devvortex (Easy Linux)-8.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-8.png"></p>
+<ul>
+<li>user: <code>lewis</code></li>
+<li>password: <code>P4ntherg0t1n5r3c0n##</code></li>
+</ul>
+<p>Logged into the Joomla admin portal. Following the path to code execution: System → Administrator Templates → Atum → Details and Files.</p>
+<p><img alt="Devvortex (Easy Linux)-9.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-9.png"></p>
+<p>Added a simple line to <code>index.php</code> to get command execution. Stole the PHP reverse shell from <a href="https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php">https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php</a></p>
+<p><img alt="Devvortex (Easy Linux)-10.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-10.png"></p>
+<p>As www-data - checking <code>/etc/passwd</code>, the interesting user is <code>logan</code> (<code>/home/logan:/bin/bash</code>).</p>
+<p>Got the reverse shell - now to privesc. Attack path: look for logan&rsquo;s password somewhere on the box. Run linpeas, run find commands in suspicious locations.</p>
+<p>Using <code>ss -tuln</code> / <code>ss -tulp</code> we can see MySQL is running on the box, and with lewis&rsquo;s creds we can log in:</p>
+<p><img alt="Devvortex (Easy Linux)-11.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-11.png"></p>
+<p>Listed the databases - the Joomla one has the standard <code>sd4fg_*</code> table set (users, etc.).</p>
+<p><img alt="Devvortex (Easy Linux)-12.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-12.png"></p>
+<p><code>logan@devvortex.htb</code>
+<code>$2y$10$IT4k5kmSGvHSO9d6M/1w0eYiB5Ne9XzArQRFJTGThNiy/yBtkIj12</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hashcat -a <span class="m">0</span> -m <span class="m">3200</span> hash.txt /usr/share/wordlists/rockyou.txt
+</span></span></code></pre></div><p>Cracked! Password for logan is <code>tequieromucho</code>.</p>
+<p><code>logan@devvortex.htb</code> / <code>tequieromucho</code></p>
+<p>SSH in as logan - user pwned!</p>
+<p><img alt="Devvortex (Easy Linux)-13.png" loading="lazy" src="/writeups/devvortex-easy-linux/Devvortex%20%28Easy%20Linux%29-13.png"></p>
+<p>We can run <code>apport-cli</code> as root - version 2.20.11. Searching this up, there&rsquo;s CVE-2023-1326 which leads to privilege escalation.</p>
+<p>Using the help page, running</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/usr/bin/apport-cli -P <span class="m">0</span> -f --save<span class="o">=</span>/home/logan/a.crash
+</span></span></code></pre></div><p>creates a valid crash file, which we can then do</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo /usr/bin/apport-cli -c a.crash
+</span></span></code></pre></div><p>and &ldquo;view&rdquo; - that drops us into a <code>less</code> view of the report, which we can exit with <code>!/bin/bash</code> giving us root.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">whoami</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Hack The Box on whoami</title>
+    <link>http://localhost:1313/htb/</link>
+    <description>Recent content in Hack The Box on whoami</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="http://localhost:1313/htb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Access</title>
+      <link>http://localhost:1313/htb/access-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/access-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Artificial</title>
+      <link>http://localhost:1313/htb/artificial-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/artificial-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Bashed</title>
+      <link>http://localhost:1313/htb/bashed-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/bashed-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>BoardLight</title>
+      <link>http://localhost:1313/htb/boardlight-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/boardlight-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Broker</title>
+      <link>http://localhost:1313/htb/broker-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/broker-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Builder</title>
+      <link>http://localhost:1313/htb/builder-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/builder-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Busqueda</title>
+      <link>http://localhost:1313/htb/busqueda-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/busqueda-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Cap</title>
+      <link>http://localhost:1313/htb/cap-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/cap-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Conversor</title>
+      <link>http://localhost:1313/htb/conversor-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/conversor-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>CozyHosting</title>
+      <link>http://localhost:1313/htb/cozyhosting-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/cozyhosting-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Devvortex</title>
+      <link>http://localhost:1313/htb/devvortex-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/devvortex-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Editor</title>
+      <link>http://localhost:1313/htb/editor-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/editor-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Editorial</title>
+      <link>http://localhost:1313/htb/editorial-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/editorial-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Expressway</title>
+      <link>http://localhost:1313/htb/expressway-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/expressway-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Help</title>
+      <link>http://localhost:1313/htb/help-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/help-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Imagery</title>
+      <link>http://localhost:1313/htb/imagery-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/imagery-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Jarvis</title>
+      <link>http://localhost:1313/htb/jarvis-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/jarvis-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Jerry</title>
+      <link>http://localhost:1313/htb/jerry-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/jerry-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Keeper</title>
+      <link>http://localhost:1313/htb/keeper-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/keeper-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Magic</title>
+      <link>http://localhost:1313/htb/magic-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/magic-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Monitored</title>
+      <link>http://localhost:1313/htb/monitored-medium-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/monitored-medium-linux/</guid>
+      <description>Medium Linux</description>
+    </item>
+    <item>
+      <title>Netmon</title>
+      <link>http://localhost:1313/htb/netmon-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/netmon-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Sau</title>
+      <link>http://localhost:1313/htb/sau-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/sau-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Servmon</title>
+      <link>http://localhost:1313/htb/servmon-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/servmon-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Silentium</title>
+      <link>http://localhost:1313/htb/silentium-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/silentium-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Snapped</title>
+      <link>http://localhost:1313/htb/snapped-hard-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/snapped-hard-linux/</guid>
+      <description>Hard Linux</description>
+    </item>
+    <item>
+      <title>Soccer</title>
+      <link>http://localhost:1313/htb/soccer-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/soccer-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+    <item>
+      <title>Support</title>
+      <link>http://localhost:1313/htb/support-easy-windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/support-easy-windows/</guid>
+      <description>Easy Windows</description>
+    </item>
+    <item>
+      <title>Writeup</title>
+      <link>http://localhost:1313/htb/writeup-easy-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/htb/writeup-easy-linux/</guid>
+      <description>Easy Linux</description>
+    </item>
+  </channel>
+</rss>

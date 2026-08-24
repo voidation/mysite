@@ -6,26 +6,14 @@
     <description>Recent content in Posts on whoami</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 May 2026 10:24:47 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 16 May 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Offensive Security Certified Professional (OSCP) Review</title>
-      <link>http://localhost:1313/posts/oscp-review/</link>
-      <pubDate>Sat, 23 May 2026 10:24:47 +0800</pubDate>
-      <guid>http://localhost:1313/posts/oscp-review/</guid>
-      <description>&lt;p&gt;This is a post about my experience with the OSCP. I&amp;rsquo;m going to cover the following points:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;What is the OSCP and why it was important?&lt;/li&gt;
-&lt;/ul&gt;</description>
-    </item>
-    <item>
-      <title>How I ended up in CyberSecurity.</title>
-      <link>http://localhost:1313/posts/how-i-got-into-cybersecurity/</link>
-      <pubDate>Fri, 22 May 2026 14:58:07 +0800</pubDate>
-      <guid>http://localhost:1313/posts/how-i-got-into-cybersecurity/</guid>
-      <description>&lt;p&gt;As of writing this post, I am a young offensive security professional that recently became a penetration tester (10 months) and I have loved it since I&amp;rsquo;ve joined.&lt;/p&gt;
-&lt;p&gt;Before this, I had obtained a Bachelor of Engineering and a Bachelor of Computer Science at Curtin University. I really loved my Uni years, and you can take a look at some of the projects in the Projects section.&lt;/p&gt;
-&lt;p&gt;After that I got my first Engineering job in WA. You see, I got into Engineering for the reason that most people get into it - curiosity, learning about how things work, designing and seeing your ideas come to life. This job just wasn&amp;rsquo;t what I imagined at all, it was mostly sales and management. I killed it at the job and got paid decently, but I frequently felt like not wanting to go into work the next day. It was getting to me mentally and even interferring with my personal life. What I really wanted was a technically challenging role where I actually got to understand systems fundamentally and that&amp;rsquo;s what I decided to pursue.&lt;/p&gt;</description>
+      <title>Hello World</title>
+      <link>http://localhost:1313/posts/hello-world/</link>
+      <pubDate>Sat, 16 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/hello-world/</guid>
+      <description>&lt;p&gt;Hello World!&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
