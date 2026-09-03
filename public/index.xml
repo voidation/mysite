@@ -29,7 +29,8 @@
       <pubDate>Fri, 15 Nov 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/projects/thesis/</guid>
       <description>&lt;h3 id=&#34;description&#34;&gt;Description&lt;/h3&gt;
-&lt;p&gt;For my honours project, I collected brain activity data of my own brain using EEG and NIRS devices. The project involved collecting raw data from the devices, processing the data, building machine learning models and training/testing those models in an attempt to classify the brain activity to differing levels of situational awareness.&lt;/p&gt;</description>
+&lt;p&gt;For my honours project, I collected brain activity data of my own brain using EEG and NIRS devices. The project involved collecting raw data from the devices, processing the data, building machine learning models and training/testing those models in an attempt to classify the brain activity to differing levels of situational awareness.
+You can find the repo at &lt;a href=&#34;https://github.com/voidation/thesis&#34;&gt;https://github.com/voidation/thesis&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Line-Following Robot</title>
