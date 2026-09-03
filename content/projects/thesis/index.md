@@ -9,4 +9,4 @@ title = 'Use of EEG and NIRS for the classification of Situational Awareness (Ho
 
 ### Description
 For my honours project, I collected brain activity data of my own brain using EEG and NIRS devices. The project involved collecting raw data from the devices, processing the data, building machine learning models and training/testing those models in an attempt to classify the brain activity to differing levels of situational awareness.
-
+You can find the repo at https://github.com/voidation/thesis.
